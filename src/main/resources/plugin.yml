@@ -1,0 +1,12 @@
+name: FactBasic
+main: net.factmc.FactBasic.Main
+version: 1.6
+author: TrollyLoki
+
+depend: [Vault, BungeePerms]
+softdepend: [SuperVanish]
+api-version: 1.13
+
+commands:
+  rtag-update:
+    permission: factbasic.update

@@ -11,10 +11,37 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import de.myzelyam.api.vanish.PlayerHideEvent;
+import de.myzelyam.api.vanish.PlayerShowEvent;
 import de.myzelyam.api.vanish.VanishAPI;
+import net.factmc.FactBasic.JoinEvents;
 import net.factmc.FactBasic.Main;
 
 public class VanishEvents implements Listener {
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void vanishChange(PlayerHideEvent event) {
+		if (!Main.disableRankTag) {
+			Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
+				@Override
+				public void run() {
+					JoinEvents.updateTeam(event.getPlayer(), null);
+				}
+			}, 5L);
+		}
+	}
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void vanishChange(PlayerShowEvent event) {
+		if (!Main.disableRankTag) {
+			Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
+				@Override
+				public void run() {
+					JoinEvents.updateTeam(event.getPlayer(), null);
+				}
+			}, 5L);
+		}
+	}
+	
 	
 	public static List<SendPause> msgs = new ArrayList<SendPause>();
 	

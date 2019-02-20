@@ -9,16 +9,19 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import com.sun.istack.internal.Nullable;
+
+import de.myzelyam.api.vanish.VanishAPI;
 import net.alpenblock.bungeeperms.platform.bukkit.event.BungeePermsUserChangedEvent;
 
 public class JoinEvents implements Listener {
 	
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-    	Player player = event.getPlayer();
     	Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
+    	Player player = event.getPlayer();
     	
-    	updateTeam(player, sb);
+    	updateTeam(player, null);
     	
     	for (Player p : Bukkit.getOnlinePlayers()) {
 			p.setScoreboard(sb);
@@ -28,17 +31,17 @@ public class JoinEvents implements Listener {
     
     @EventHandler(priority = EventPriority.MONITOR)
 	public void rankChange(BungeePermsUserChangedEvent event) {
-		
-		Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
+    	
 		Player player = Bukkit.getPlayer(event.getUser().getUUID());
 		if (player != null) {
-			JoinEvents.updateTeam(player, sb);
+			updateTeam(player, null);
 		}
 		
 	}
     
     
-    public static void updateTeam(Player player, Scoreboard sb) {
+    public static void updateTeam(Player player, @Nullable Scoreboard sb) {
+    	if (sb == null) sb = Bukkit.getScoreboardManager().getMainScoreboard();
 		
 		/*if (Main.useFactions) {
 			TeamManager.changeTeam(player);
@@ -46,13 +49,22 @@ public class JoinEvents implements Listener {
 		
 		String rank = Main.perms.getPrimaryGroup(player);
 		if (rank == null) return;
+		String add = "";
+		if (VanishAPI.isInvisible(player)) add = "v";
+		
 		if (rank.equalsIgnoreCase("default")) {
-			Team team = sb.getEntryTeam(player.getName());
-			if (team == null) return;
-			team.removeEntry(player.getName());
+			if (add.equals("v")) {
+				Team team = sb.getTeam("rank_vanished");
+				team.addEntry(player.getName());
+			}
+			else {
+				Team team = sb.getEntryTeam(player.getName());
+				if (team == null) return;
+				team.removeEntry(player.getName());
+			}
 		}
 		else {
-			Team team = sb.getTeam("rank-" + rank);
+			Team team = sb.getTeam("rank_" + rank + add);
 			team.addEntry(player.getName());
 		}
 			

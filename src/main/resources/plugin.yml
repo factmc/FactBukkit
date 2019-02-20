@@ -1,10 +1,11 @@
 name: FactBasic
 main: net.factmc.FactBasic.Main
-version: 1.6
+version: 1.6.1
 author: TrollyLoki
 
 depend: [Vault, BungeePerms]
 softdepend: [SuperVanish]
+
 api-version: 1.13
 
 commands:

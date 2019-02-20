@@ -40,7 +40,7 @@ public class Main extends JavaPlugin implements Listener {
     	
     	useVanish = getServer().getPluginManager().getPlugin("SuperVanish") != null;
     	if (useVanish) {
-    		plugin.getLogger().info("Found SuperVanish. Monitoring events");
+    		plugin.getLogger().info("Found SuperVanish. Monitoring its events");
     	}
     	
     	disableRankTag = getServer().getPluginManager().getPlugin("FactHub") != null;
@@ -113,15 +113,33 @@ public class Main extends JavaPlugin implements Listener {
     	
 		for (String group : perms.getGroups()) {
         	if (!group.equalsIgnoreCase("default")) {
-        		Team oldTeam = sb.getTeam("rank-" + group);
-        		if (oldTeam != null) oldTeam.unregister();
-	        	Team team = sb.registerNewTeam("rank-" + group);
-	        	String name = getColoredRank(group);
-	        	String prefix = "[" + name + ChatColor.RESET + "]";
-	        	team.setPrefix(prefix);
-	        	//team.setColor(getRankColor(group));
+        		for (int i = 0; i < 2; i++) {
+        			String add = "";
+        			if (i > 0) {
+        				if (!useVanish) break;
+        				add = "v";
+        			}
+        			
+	        		Team oldTeam = sb.getTeam("rank_" + group + add);
+	        		if (oldTeam != null) oldTeam.unregister();
+		        	Team team = sb.registerNewTeam("rank_" + group + add);
+		        	String name = getColoredRank(group);
+		        	String prefix = "[" + name + ChatColor.RESET + "]";
+		        	team.setPrefix(prefix);
+		        	if (i > 0) {
+		        		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
+		        	}
+		        	
+        		}
         	}
         }
+		
+		if (useVanish) {
+			Team oldTeam = sb.getTeam("rank_vanished");
+    		if (oldTeam != null) oldTeam.unregister();
+        	Team team = sb.registerNewTeam("rank_vanished");
+    		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
+		}
     	
     }
     

@@ -24,7 +24,7 @@ public class ReloadCommand implements CommandExecutor {
         	
         	for (Player p : Bukkit.getOnlinePlayers()) {
         		
-            	JoinEvents.updateTeam(p, sb);
+            	JoinEvents.updateTeam(p, null);
             	
     			p.setScoreboard(sb);
     			

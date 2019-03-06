@@ -3,20 +3,18 @@ package net.factmc.FactBasic;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import net.alpenblock.bungeeperms.BungeePerms;
+import net.alpenblock.bungeeperms.Group;
 import net.factmc.FactBasic.commands.ReloadCommand;
 import net.factmc.FactBasic.supervanish.VanishEvents;
-import net.milkbowl.vault.permission.Permission;
 
 public class Main extends JavaPlugin implements Listener {
 	
 	public static JavaPlugin plugin;
-	
-	public static Permission perms;
 	
 	//public static List<Object> roles = new ArrayList<Object>();
 	
@@ -52,9 +50,9 @@ public class Main extends JavaPlugin implements Listener {
     	registerEvents();
     	//registerCommands();
     	
-    	RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
+    	/*RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
         perms = permRSP.getProvider();
-        plugin.getLogger().info("Connected to " + perms.getName());
+        plugin.getLogger().info("Connected to " + perms.getName());*/
     	
         if (!disableRankTag) {
 	    	registerTeams(Bukkit.getScoreboardManager().getMainScoreboard());
@@ -111,7 +109,8 @@ public class Main extends JavaPlugin implements Listener {
     		}
     	}*/
     	
-		for (String group : perms.getGroups()) {
+		for (Group raw : BungeePerms.getInstance().getPermissionsManager().getGroups()) {
+			String group = raw.getName();
         	if (!group.equalsIgnoreCase("default")) {
         		for (int i = 0; i < 2; i++) {
         			String add = "";

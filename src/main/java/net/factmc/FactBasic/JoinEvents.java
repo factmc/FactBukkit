@@ -9,9 +9,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import com.sun.istack.internal.Nullable;
-
 import de.myzelyam.api.vanish.VanishAPI;
+import net.alpenblock.bungeeperms.BungeePerms;
+import net.alpenblock.bungeeperms.Group;
 import net.alpenblock.bungeeperms.platform.bukkit.event.BungeePermsUserChangedEvent;
 
 public class JoinEvents implements Listener {
@@ -40,15 +40,16 @@ public class JoinEvents implements Listener {
 	}
     
     
-    public static void updateTeam(Player player, @Nullable Scoreboard sb) {
+    public static void updateTeam(Player player, Scoreboard sb) {
     	if (sb == null) sb = Bukkit.getScoreboardManager().getMainScoreboard();
 		
 		/*if (Main.useFactions) {
 			TeamManager.changeTeam(player);
 		}*/
 		
-		String rank = Main.perms.getPrimaryGroup(player);
-		if (rank == null) return;
+		Group group = BungeePerms.getInstance().getPermissionsManager().getUser(player.getUniqueId()).getGroupByLadder("default");
+		if (group == null) return;
+		String rank = group.getName();
 		String add = "";
 		if (VanishAPI.isInvisible(player)) add = "v";
 		

@@ -22,7 +22,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Libraries/bukkit/MassiveCore.jar"/>
-	<classpathentry kind="lib" path="/Libraries/bukkit/Vault.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/BungeePerms-3.0.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/SuperVanish.jar"/>
 	<classpathentry kind="output" path="target/classes"/>

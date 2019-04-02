@@ -174,7 +174,7 @@ public class Main extends JavaPlugin implements Listener {
     		break;
     	case "head-admin":
     		color = ChatColor.DARK_RED;
-    		name = "Hd Admin";
+    		name = "Head Admin";
     		break;
     	case "owner":
     		color = ChatColor.GOLD;

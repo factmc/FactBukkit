@@ -12,6 +12,7 @@ import org.bukkit.scoreboard.Team;
 import de.myzelyam.api.vanish.VanishAPI;
 import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.Group;
+import net.alpenblock.bungeeperms.User;
 import net.alpenblock.bungeeperms.platform.bukkit.event.BungeePermsUserChangedEvent;
 
 public class JoinEvents implements Listener {
@@ -47,9 +48,11 @@ public class JoinEvents implements Listener {
 			TeamManager.changeTeam(player);
 		}*/
 		
-		Group group = BungeePerms.getInstance().getPermissionsManager().getUser(player.getUniqueId()).getGroupByLadder("default");
+    	User user = BungeePerms.getInstance().getPermissionsManager().getUser(player.getUniqueId());
+		Group group = user.getGroupByLadder("default");
 		if (group == null) return;
 		String rank = group.getName();
+		if (rank.equalsIgnoreCase("default")) rank = getOtherGroup(user);
 		String add = "";
 		if (VanishAPI.isInvisible(player)) add = "v";
 		
@@ -69,6 +72,17 @@ public class JoinEvents implements Listener {
 			team.addEntry(player.getName());
 		}
 			
+    }
+    
+    
+    public static String getOtherGroup(User user) {
+    	
+    	for (Group group : user.getGroups()) {
+    		if (group.getLadder().equals("none"))
+    			return group.getName();
+    	}
+    	return "default";
+    	
     }
 	
 }

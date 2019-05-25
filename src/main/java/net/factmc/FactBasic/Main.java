@@ -11,6 +11,7 @@ import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.Group;
 import net.factmc.FactBasic.commands.ReloadCommand;
 import net.factmc.FactBasic.supervanish.VanishEvents;
+import net.factmc.FactCore.CoreUtils;
 
 public class Main extends JavaPlugin implements Listener {
 	
@@ -122,7 +123,7 @@ public class Main extends JavaPlugin implements Listener {
 	        		Team oldTeam = sb.getTeam("rank_" + group + add);
 	        		if (oldTeam != null) oldTeam.unregister();
 		        	Team team = sb.registerNewTeam("rank_" + group + add);
-		        	String name = getColoredRank(group);
+		        	String name = CoreUtils.getColoredRank(group);
 		        	String prefix = "[" + name + ChatColor.RESET + "]";
 		        	team.setPrefix(prefix);
 		        	if (i > 0) {
@@ -142,6 +143,7 @@ public class Main extends JavaPlugin implements Listener {
     	
     }
     
+    @Deprecated
     public static String getColoredRank(String rank) {
     	rank = rank.toLowerCase();
     	

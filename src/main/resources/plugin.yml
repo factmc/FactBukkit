@@ -3,7 +3,7 @@ main: net.factmc.FactBasic.Main
 version: 1.7.1
 author: TrollyLoki
 
-depend: [BungeePerms]
+depend: [BungeePerms, FactCore]
 softdepend: [SuperVanish]
 
 api-version: 1.13

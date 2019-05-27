@@ -6,7 +6,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
 import net.factmc.FactBasic.JoinEvents;
 import net.factmc.FactBasic.Main;
 
@@ -20,13 +19,10 @@ public class ReloadCommand implements CommandExecutor {
         		return false;
         	}
         	
-        	Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
-        	
         	for (Player p : Bukkit.getOnlinePlayers()) {
         		
-            	JoinEvents.updateTeam(p, null);
-            	
-    			p.setScoreboard(sb);
+            	JoinEvents.updateTeam(p, Main.getScoreboard());
+    			p.setScoreboard(Main.getScoreboard());
     			
     		}
         	

@@ -19,13 +19,12 @@ public class JoinEvents implements Listener {
 	
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-    	Scoreboard sb = Bukkit.getScoreboardManager().getMainScoreboard();
     	Player player = event.getPlayer();
     	
-    	updateTeam(player, null);
+    	updateTeam(player, Main.getScoreboard());
     	
     	for (Player p : Bukkit.getOnlinePlayers()) {
-			p.setScoreboard(sb);
+			p.setScoreboard(Main.getScoreboard());
 		}
 		
     }
@@ -34,9 +33,8 @@ public class JoinEvents implements Listener {
 	public void rankChange(BungeePermsUserChangedEvent event) {
     	
 		Player player = Bukkit.getPlayer(event.getUser().getUUID());
-		if (player != null) {
-			updateTeam(player, null);
-		}
+		if (player != null)
+			updateTeam(player, Main.getScoreboard());
 		
 	}
     

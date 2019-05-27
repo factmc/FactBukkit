@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.Team.Option;
+import org.bukkit.scoreboard.Team.OptionStatus;
 
 import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.Group;
@@ -21,6 +23,7 @@ public class Main extends JavaPlugin implements Listener {
 	
 	public static boolean useVanish = true;
 	public static boolean disableRankTag = false;
+	private static Scoreboard sb;
 	
     @Override
     public void onEnable() {
@@ -42,10 +45,12 @@ public class Main extends JavaPlugin implements Listener {
     		plugin.getLogger().info("Found SuperVanish. Monitoring its events");
     	}
     	
+    	/*
     	disableRankTag = getServer().getPluginManager().getPlugin("FactHub") != null;
     	if (disableRankTag) {
     		plugin.getLogger().info("Found FactHub. Disabling Listeners");
     	}
+    	*/
     	
     	Bukkit.getPluginCommand("rtag-update").setExecutor(new ReloadCommand());
     	registerEvents();
@@ -56,7 +61,8 @@ public class Main extends JavaPlugin implements Listener {
         plugin.getLogger().info("Connected to " + perms.getName());*/
     	
         if (!disableRankTag) {
-	    	registerTeams(Bukkit.getScoreboardManager().getMainScoreboard());
+        	sb = Bukkit.getScoreboardManager().getMainScoreboard();
+	    	registerTeams(sb);
 	        plugin.getLogger().info("Registered Teams");
         }
     }
@@ -95,6 +101,10 @@ public class Main extends JavaPlugin implements Listener {
         return plugin;
     }
     
+    public static Scoreboard getScoreboard() {
+    	return sb;
+    }
+    
     
     public static void registerTeams(Scoreboard sb) {
     	
@@ -109,6 +119,11 @@ public class Main extends JavaPlugin implements Listener {
     			TeamManager.updateTeam(faction);
     		}
     	}*/
+    	
+    	for (Team team : sb.getTeams()) {
+    		if (team.getName().startsWith("rank_"))
+    			team.unregister();
+    	}
     	
 		for (Group raw : BungeePerms.getInstance().getPermissionsManager().getGroups()) {
 			String group = raw.getName();
@@ -128,6 +143,7 @@ public class Main extends JavaPlugin implements Listener {
 		        	team.setPrefix(prefix);
 		        	if (i > 0) {
 		        		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
+		        		team.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
 		        	}
 		        	
         		}

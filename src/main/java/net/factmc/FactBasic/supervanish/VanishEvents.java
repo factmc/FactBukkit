@@ -25,7 +25,7 @@ public class VanishEvents implements Listener {
 			Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
 				@Override
 				public void run() {
-					JoinEvents.updateTeam(event.getPlayer(), null);
+					JoinEvents.updateTeam(event.getPlayer(), Main.getScoreboard());
 				}
 			}, 5L);
 		}
@@ -36,7 +36,7 @@ public class VanishEvents implements Listener {
 			Bukkit.getScheduler().runTaskLater(Main.getPlugin(), new Runnable() {
 				@Override
 				public void run() {
-					JoinEvents.updateTeam(event.getPlayer(), null);
+					JoinEvents.updateTeam(event.getPlayer(), Main.getScoreboard());
 				}
 			}, 5L);
 		}

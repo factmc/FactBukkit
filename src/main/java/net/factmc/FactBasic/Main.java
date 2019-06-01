@@ -120,11 +120,6 @@ public class Main extends JavaPlugin implements Listener {
     		}
     	}*/
     	
-    	for (Team team : sb.getTeams()) {
-    		if (team.getName().startsWith("rank_"))
-    			team.unregister();
-    	}
-    	
 		for (Group raw : BungeePerms.getInstance().getPermissionsManager().getGroups()) {
 			String group = raw.getName();
         	if (!group.equalsIgnoreCase("default")) {
@@ -135,9 +130,12 @@ public class Main extends JavaPlugin implements Listener {
         				add = "v";
         			}
         			
-	        		Team oldTeam = sb.getTeam("rank_" + group + add);
-	        		if (oldTeam != null) oldTeam.unregister();
-		        	Team team = sb.registerNewTeam("rank_" + group + add);
+	        		Team team; String teamName = "rank_" + group + add;
+		        	try {
+		        		team = sb.registerNewTeam(teamName);
+		        	} catch (IllegalArgumentException e) {
+		        		team = sb.getTeam(teamName);
+		        	}
 		        	String name = CoreUtils.getColoredRank(group);
 		        	String prefix = "[" + name + ChatColor.RESET + "]";
 		        	team.setPrefix(prefix);

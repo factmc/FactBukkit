@@ -122,38 +122,39 @@ public class Main extends JavaPlugin implements Listener {
     	
 		for (Group raw : BungeePerms.getInstance().getPermissionsManager().getGroups()) {
 			String group = raw.getName();
-        	if (!group.equalsIgnoreCase("default")) {
-        		for (int i = 0; i < 2; i++) {
-        			String add = "";
-        			if (i > 0) {
-        				if (!useVanish) break;
-        				add = "v";
-        			}
-        			
-	        		Team team; String teamName = "rank_" + group + add;
-		        	try {
-		        		team = sb.registerNewTeam(teamName);
-		        	} catch (IllegalArgumentException e) {
-		        		team = sb.getTeam(teamName);
-		        	}
+    		for (int i = 0; i < 2; i++) {
+    			String add = "";
+    			if (i > 0) {
+    				if (!useVanish) break;
+    				add = "v";
+    			}
+    			
+        		Team team; String teamName = "rank_" + group + add;
+	        	try {
+	        		team = sb.registerNewTeam(teamName);
+	        	} catch (IllegalArgumentException e) {
+	        		team = sb.getTeam(teamName);
+	        	}
+	        	
+	        	if (!group.equalsIgnoreCase("default")) {
 		        	String name = CoreUtils.getColoredRank(group);
 		        	String prefix = "[" + name + ChatColor.RESET + "]";
 		        	team.setPrefix(prefix);
-		        	if (i > 0) {
-		        		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
-		        		team.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
-		        	}
-		        	
-        		}
-        	}
+	        	}
+	        	if (i > 0) {
+	        		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
+	        		team.setOption(Option.COLLISION_RULE, OptionStatus.NEVER);
+	        	}
+	        	
+    		}
         }
 		
-		if (useVanish) {
+		/*if (useVanish) {
 			Team oldTeam = sb.getTeam("rank_vanished");
     		if (oldTeam != null) oldTeam.unregister();
         	Team team = sb.registerNewTeam("rank_vanished");
     		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
-		}
+		}*/
     	
     }
     

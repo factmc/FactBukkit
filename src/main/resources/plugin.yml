@@ -1,6 +1,6 @@
 name: FactBasic
 main: net.factmc.FactBasic.Main
-version: 1.7.3
+version: 1.8
 author: TrollyLoki
 
 depend: [BungeePerms, FactCore]

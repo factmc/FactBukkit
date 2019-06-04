@@ -54,7 +54,7 @@ public class JoinEvents implements Listener {
 		String add = "";
 		if (VanishAPI.isInvisible(player)) add = "v";
 		
-		if (rank.equalsIgnoreCase("default")) {
+		/*if (rank.equalsIgnoreCase("default")) {
 			if (add.equals("v")) {
 				Team team = sb.getTeam("rank_vanished");
 				team.addEntry(player.getName());
@@ -64,11 +64,9 @@ public class JoinEvents implements Listener {
 				if (team == null) return;
 				team.removeEntry(player.getName());
 			}
-		}
-		else {
-			Team team = sb.getTeam("rank_" + rank + add);
-			team.addEntry(player.getName());
-		}
+		}*/
+		Team team = sb.getTeam("rank_" + rank + add);
+		team.addEntry(player.getName());
 			
     }
     

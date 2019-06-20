@@ -4,9 +4,9 @@ version: 1.8
 author: TrollyLoki
 
 depend: [BungeePerms, FactCore]
-softdepend: [SuperVanish]
+softdepend: [SuperVanish, GriefPrevention]
 
-api-version: 1.13
+api-version: 1.14
 
 commands:
   rtag-update:

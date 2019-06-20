@@ -1,4 +1,4 @@
-package net.factmc.FactBasic.supervanish;
+package net.factmc.FactBasic.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class VanishEvents implements Listener {
 	}
 	
 	
-	public static List<SendPause> msgs = new ArrayList<SendPause>();
+	public static List<VanishSendPause> msgs = new ArrayList<VanishSendPause>();
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onChatMessage(AsyncPlayerChatEvent event) {
@@ -52,11 +52,11 @@ public class VanishEvents implements Listener {
 		
 		Player player = event.getPlayer();
 		
-		SendPause pause = null;
+		VanishSendPause pause = null;
 		if (VanishAPI.isInvisible(player)) {
 			
 			
-			for (SendPause msg : msgs) {
+			for (VanishSendPause msg : msgs) {
 				
 				if (matches(player, msg, event.getMessage())) {
 					
@@ -74,7 +74,7 @@ public class VanishEvents implements Listener {
 			else {
 				event.setCancelled(true);
 				
-				final SendPause newPause = new SendPause(player, event.getMessage());
+				final VanishSendPause newPause = new VanishSendPause(player, event.getMessage());
 				Bukkit.getScheduler().runTask(Main.getPlugin(), new Runnable() {
 
 					@Override
@@ -90,8 +90,8 @@ public class VanishEvents implements Listener {
 			}
 			
 			
-			SendPause old = null;
-			for (SendPause msg : msgs) {
+			VanishSendPause old = null;
+			for (VanishSendPause msg : msgs) {
 				if (msg.getPlayer() == player) {
 					old = msg;
 					break;
@@ -108,7 +108,7 @@ public class VanishEvents implements Listener {
 	}
 	
 	
-	public static boolean matches(Player player, SendPause pause, String msg) {
+	public static boolean matches(Player player, VanishSendPause pause, String msg) {
 		
 		if (player != pause.getPlayer()) return false;
 		

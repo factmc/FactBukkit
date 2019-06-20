@@ -1,13 +1,13 @@
-package net.factmc.FactBasic.supervanish;
+package net.factmc.FactBasic.listeners;
 
 import org.bukkit.entity.Player;
 
-public class SendPause {
+public class VanishSendPause {
 	
 	protected Player player;
 	protected String msg;
 	
-	public SendPause(Player player, String msg) {
+	public VanishSendPause(Player player, String msg) {
 		this.player = player;
 		this.msg = msg;
 	}

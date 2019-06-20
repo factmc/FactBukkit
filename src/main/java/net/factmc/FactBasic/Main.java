@@ -12,7 +12,8 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.Group;
 import net.factmc.FactBasic.commands.ReloadCommand;
-import net.factmc.FactBasic.supervanish.VanishEvents;
+import net.factmc.FactBasic.listeners.ClaimingShovelBlocker;
+import net.factmc.FactBasic.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
 
 public class Main extends JavaPlugin implements Listener {
@@ -22,6 +23,7 @@ public class Main extends JavaPlugin implements Listener {
 	//public static List<Object> roles = new ArrayList<Object>();
 	
 	public static boolean useVanish = true;
+	public static boolean gpInstalled = false;
 	public static boolean disableRankTag = false;
 	private static Scoreboard sb;
 	
@@ -43,6 +45,11 @@ public class Main extends JavaPlugin implements Listener {
     	useVanish = getServer().getPluginManager().getPlugin("SuperVanish") != null;
     	if (useVanish) {
     		plugin.getLogger().info("Found SuperVanish. Monitoring its events");
+    	}
+    	
+    	gpInstalled = getServer().getPluginManager().getPlugin("GriefPrevention") != null;
+    	if (gpInstalled) {
+    		
     	}
     	
     	/*
@@ -78,17 +85,18 @@ public class Main extends JavaPlugin implements Listener {
     public void registerEvents() {
     	
     	if (useVanish) {
-    		
     		Bukkit.getServer().getPluginManager()
     				.registerEvents(new VanishEvents(), plugin);
-    		
+    	}
+    	
+    	if (gpInstalled) {
+    		Bukkit.getServer().getPluginManager()
+    				.registerEvents(new ClaimingShovelBlocker(), plugin);
     	}
     	
     	if (!disableRankTag) {
-	    	
 	    	Bukkit.getServer().getPluginManager()
 	    			.registerEvents(new JoinEvents(), plugin);
-	    	
     	}
     	
     }

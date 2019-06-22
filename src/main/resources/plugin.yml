@@ -1,13 +1,14 @@
 name: FactBasic
 main: net.factmc.FactBasic.Main
-version: 1.8
+version: 1.8.1
 author: TrollyLoki
 
 depend: [BungeePerms, FactCore]
-softdepend: [SuperVanish, GriefPrevention]
+softdepend: [SuperVanish, GriefPrevention, ClearLag]
 
 api-version: 1.14
 
 commands:
   rtag-update:
     permission: factbasic.update
+  cancelclear:

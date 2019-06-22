@@ -1,40 +1,49 @@
 package net.factmc.FactBasic.commands;
 
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
-import me.minebuilders.clearlag.modules.CommandModule;
 
-public class ClearLagCancelCommand extends CommandModule implements Listener {
+public class ClearLagCancelCommand implements Listener, CommandExecutor {
 	
 	private static boolean cancelNext = false;
 	
-	public ClearLagCancelCommand() {
+	/*public ClearLagCancelCommand() {
 		name = "cancel";
-		argLength = 0;
-		usage = "Cancel an automatic removal";
-	}
+		argLength = 1;
+		usage = "/lagg cancel";
+		desc = "Cancel an automatic removal";
+	}*/
 
-	@Override
-	public void run(CommandSender sender, String[] args) {
-		
-		sender.sendMessage("The next automatic clear will be cancelled");
-		cancelNext = true;
-		return;
-		
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		if (cmd.getName().equalsIgnoreCase("cancelclear") && sender.hasPermission("lagg.cancel")) {
+			if (sender.hasPermission("lagg.uncancel") && cancelNext) {
+				cancelNext = false;
+				sender.sendMessage(ChatColor.AQUA + "The next automatic clear will no longer be cancelled");
+				return true;
+			}
+			
+			cancelNext = true;
+			sender.sendMessage(ChatColor.AQUA + "The next automatic clear will be cancelled");
+			return true;
+		}
+		return false;
 	}
 	
 	@EventHandler
 	public void onClear(EntityRemoveEvent event) {
 		
 		if (cancelNext) {
-			for (Entity entity : event.getEntityList()) {
-				event.removeEntity(entity);
-			}
+			//String msg = ChatColor.RED + "Cancelling Removal...";
+			//Bukkit.broadcastMessage(msg); Bukkit.getConsoleSender().sendMessage(msg);
+			event.getEntityList().clear();
 		}
+		cancelNext = false;
 		
 	}
 	

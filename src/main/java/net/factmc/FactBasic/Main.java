@@ -11,6 +11,7 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 
 import net.alpenblock.bungeeperms.BungeePerms;
 import net.alpenblock.bungeeperms.Group;
+import net.factmc.FactBasic.commands.ClearLagCancelCommand;
 import net.factmc.FactBasic.commands.ReloadCommand;
 import net.factmc.FactBasic.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBasic.listeners.VanishEvents;
@@ -49,7 +50,7 @@ public class Main extends JavaPlugin implements Listener {
     	
     	gpInstalled = getServer().getPluginManager().getPlugin("GriefPrevention") != null;
     	if (gpInstalled) {
-    		
+    		plugin.getLogger().info("Blocking claiming shovel mining");
     	}
     	
     	/*
@@ -61,7 +62,7 @@ public class Main extends JavaPlugin implements Listener {
     	
     	Bukkit.getPluginCommand("rtag-update").setExecutor(new ReloadCommand());
     	registerEvents();
-    	//registerCommands();
+    	registerCommands();
     	
     	/*RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
         perms = permRSP.getProvider();
@@ -85,17 +86,17 @@ public class Main extends JavaPlugin implements Listener {
     public void registerEvents() {
     	
     	if (useVanish) {
-    		Bukkit.getServer().getPluginManager()
+    		getServer().getPluginManager()
     				.registerEvents(new VanishEvents(), plugin);
     	}
     	
     	if (gpInstalled) {
-    		Bukkit.getServer().getPluginManager()
+    		getServer().getPluginManager()
     				.registerEvents(new ClaimingShovelBlocker(), plugin);
     	}
     	
     	if (!disableRankTag) {
-	    	Bukkit.getServer().getPluginManager()
+	    	getServer().getPluginManager()
 	    			.registerEvents(new JoinEvents(), plugin);
     	}
     	
@@ -103,6 +104,11 @@ public class Main extends JavaPlugin implements Listener {
     
     public void registerCommands() {
     	//plugin.getCommand("cmd").setExecutor(this);
+    	if (getServer().getPluginManager().getPlugin("ClearLag") != null) {
+    		getServer().getPluginCommand("cancelclear").setExecutor(new ClearLagCancelCommand());
+    		getServer().getPluginManager().registerEvents(new ClearLagCancelCommand(), plugin);
+    		plugin.getLogger().info("Registered ClearLag cancel command");
+    	}
     }
     
     public static JavaPlugin getPlugin() {

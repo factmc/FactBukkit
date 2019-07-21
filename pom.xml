@@ -2,19 +2,35 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.factmc.FactBasic</groupId>
   <artifactId>FactBasic</artifactId>
-  <version>1.8.1</version>
+  <version>1.9</version>
   
   <repositories>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
     </repository>
+    <repository>
+      <id>cubekrowd-repo</id>
+      <url>https://mavenrepo.cubekrowd.net/artifactory/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.14.2-R0.1-SNAPSHOT</version>
+      <version>1.14.4-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.lucko.luckperms</groupId>
+      <artifactId>luckperms-api</artifactId>
+      <version>4.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>de.myzelyam</groupId>
+      <artifactId>SuperVanish</artifactId>
+      <version>6.0.4</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

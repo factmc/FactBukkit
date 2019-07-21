@@ -9,11 +9,12 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
-import net.alpenblock.bungeeperms.BungeePerms;
-import net.alpenblock.bungeeperms.Group;
+import me.lucko.luckperms.LuckPerms;
+import me.lucko.luckperms.api.Group;
 import net.factmc.FactBasic.commands.ClearLagCancelCommand;
 import net.factmc.FactBasic.commands.ReloadCommand;
 import net.factmc.FactBasic.listeners.ClaimingShovelBlocker;
+import net.factmc.FactBasic.listeners.LuckPermsEvents;
 import net.factmc.FactBasic.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
 
@@ -98,6 +99,7 @@ public class Main extends JavaPlugin implements Listener {
     	if (!disableRankTag) {
 	    	getServer().getPluginManager()
 	    			.registerEvents(new JoinEvents(), plugin);
+	    	new LuckPermsEvents();
     	}
     	
     }
@@ -134,7 +136,7 @@ public class Main extends JavaPlugin implements Listener {
     		}
     	}*/
     	
-		for (Group raw : BungeePerms.getInstance().getPermissionsManager().getGroups()) {
+		for (Group raw : LuckPerms.getApi().getGroups()) {
 			String group = raw.getName();
     		for (int i = 0; i < 2; i++) {
     			String add = "";
@@ -151,8 +153,7 @@ public class Main extends JavaPlugin implements Listener {
 	        	}
 	        	
 	        	if (!group.equalsIgnoreCase("default")) {
-		        	String name = CoreUtils.getColoredRank(group);
-		        	String prefix = "[" + name + ChatColor.RESET + "]";
+		        	String prefix = CoreUtils.getPrefix(group);
 		        	team.setPrefix(prefix);
 	        	}
 	        	if (i > 0) {

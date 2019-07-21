@@ -1,9 +1,9 @@
 name: FactBasic
 main: net.factmc.FactBasic.Main
-version: 1.8.1
+version: 1.9
 author: TrollyLoki
 
-depend: [BungeePerms, FactCore]
+depend: [LuckPerms, FactCore]
 softdepend: [SuperVanish, GriefPrevention, ClearLag]
 
 api-version: 1.14

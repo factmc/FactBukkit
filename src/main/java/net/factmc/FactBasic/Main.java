@@ -13,6 +13,7 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Group;
 import net.factmc.FactBasic.commands.ClearLagCancelCommand;
 import net.factmc.FactBasic.commands.ReloadCommand;
+import net.factmc.FactBasic.commands.SignEditCommand;
 import net.factmc.FactBasic.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBasic.listeners.LuckPermsEvents;
 import net.factmc.FactBasic.listeners.VanishEvents;
@@ -61,7 +62,6 @@ public class Main extends JavaPlugin implements Listener {
     	}
     	*/
     	
-    	Bukkit.getPluginCommand("rtag-update").setExecutor(new ReloadCommand());
     	registerEvents();
     	registerCommands();
     	
@@ -106,6 +106,9 @@ public class Main extends JavaPlugin implements Listener {
     
     public void registerCommands() {
     	//plugin.getCommand("cmd").setExecutor(this);
+    	getCommand("rtag-update").setExecutor(new ReloadCommand());
+    	SignEditCommand.load();
+    	
     	if (getServer().getPluginManager().getPlugin("ClearLag") != null) {
     		getServer().getPluginCommand("cancelclear").setExecutor(new ClearLagCancelCommand());
     		getServer().getPluginManager().registerEvents(new ClearLagCancelCommand(), plugin);

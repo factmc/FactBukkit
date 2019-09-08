@@ -1,33 +1,37 @@
-package net.factmc.FactBasic.commands;
+package net.factmc.FactBukkit.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.intellectualsites.plotsquared.plot.object.Location;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldguard.LocalPlayer;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
-import com.sk89q.worldguard.protection.flags.Flags;
 import com.sk89q.worldguard.protection.regions.RegionQuery;
 
 import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
-import net.factmc.FactBasic.Main;
+import net.factmc.FactBukkit.Main;
+import world.bentobox.bentobox.api.flags.FlagListener;
 
 public class SignEditCommand implements CommandExecutor {
 	
-	private static boolean griefPrevention = false, plotSquared = false, worldGuard = false, hub = false;
+	private static boolean griefPrevention = false, plotSquared = false, worldGuard = false, bSkyblock = false, hub = false;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -38,7 +42,7 @@ public class SignEditCommand implements CommandExecutor {
 				return false;
 			}
 			
-			if (!sender.hasPermission("factbasic.signedit")) {
+			if (!sender.hasPermission("factbukkit.signedit")) {
 				sender.sendMessage(ChatColor.RED + "You do not have permission to do that");
 				return false;
 			}
@@ -71,7 +75,7 @@ public class SignEditCommand implements CommandExecutor {
 				RegionQuery query = WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery();
 				
 				if (!WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, localPlayer.getWorld()) &&
-						!query.testState(BukkitAdapter.adapt(block.getLocation()), localPlayer, Flags.BUILD)) {
+						!query.testState(BukkitAdapter.adapt(block.getLocation()), localPlayer, com.sk89q.worldguard.protection.flags.Flags.BUILD)) {
 					buildAllowed = false;
 				}
 			}
@@ -95,6 +99,12 @@ public class SignEditCommand implements CommandExecutor {
 								|| player.hasPermission("plots.admin.build.other")))
 							buildAllowed = false;
 					}
+				}
+			}
+			if (buildAllowed && bSkyblock) {
+				if (!new FlagListener(){}.checkIsland(new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, new ItemStack(Material.AIR), block, BlockFace.UP),
+						player, block.getLocation(), world.bentobox.bentobox.lists.Flags.PLACE_BLOCKS, true)) {
+					buildAllowed = false;
 				}
 			}
 			

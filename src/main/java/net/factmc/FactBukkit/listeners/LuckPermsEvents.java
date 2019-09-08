@@ -1,4 +1,4 @@
-package net.factmc.FactBasic.listeners;
+package net.factmc.FactBukkit.listeners;
 
 import java.util.UUID;
 
@@ -9,8 +9,8 @@ import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.event.EventBus;
 import me.lucko.luckperms.api.event.user.track.UserDemoteEvent;
 import me.lucko.luckperms.api.event.user.track.UserPromoteEvent;
-import net.factmc.FactBasic.JoinEvents;
-import net.factmc.FactBasic.Main;
+import net.factmc.FactBukkit.JoinEvents;
+import net.factmc.FactBukkit.Main;
 
 public class LuckPermsEvents {
 	

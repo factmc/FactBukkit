@@ -1,4 +1,4 @@
-package net.factmc.FactBasic.commands;
+package net.factmc.FactBukkit.commands;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
-import net.factmc.FactBasic.Main;
+import net.factmc.FactBukkit.Main;
 
 public class ClearLagCancelCommand implements Listener, CommandExecutor {
 	

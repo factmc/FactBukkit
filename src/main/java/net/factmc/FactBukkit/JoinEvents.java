@@ -1,4 +1,4 @@
-package net.factmc.FactBasic;
+package net.factmc.FactBukkit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

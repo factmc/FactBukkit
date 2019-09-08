@@ -1,4 +1,4 @@
-package net.factmc.FactBasic.listeners;
+package net.factmc.FactBukkit.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import de.myzelyam.api.vanish.PlayerHideEvent;
 import de.myzelyam.api.vanish.PlayerShowEvent;
 import de.myzelyam.api.vanish.VanishAPI;
-import net.factmc.FactBasic.JoinEvents;
-import net.factmc.FactBasic.Main;
+import net.factmc.FactBukkit.JoinEvents;
+import net.factmc.FactBukkit.Main;
 
 public class VanishEvents implements Listener {
 	

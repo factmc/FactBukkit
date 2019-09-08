@@ -1,4 +1,4 @@
-package net.factmc.FactBasic.commands;
+package net.factmc.FactBukkit.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -6,8 +6,9 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import net.factmc.FactBasic.JoinEvents;
-import net.factmc.FactBasic.Main;
+
+import net.factmc.FactBukkit.JoinEvents;
+import net.factmc.FactBukkit.Main;
 
 public class ReloadCommand implements CommandExecutor {
 	

@@ -1,8 +1,9 @@
-package net.factmc.FactBasic;
+package net.factmc.FactBukkit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -11,13 +12,20 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Group;
-import net.factmc.FactBasic.commands.ClearLagCancelCommand;
-import net.factmc.FactBasic.commands.ReloadCommand;
-import net.factmc.FactBasic.commands.SignEditCommand;
-import net.factmc.FactBasic.listeners.ClaimingShovelBlocker;
-import net.factmc.FactBasic.listeners.LuckPermsEvents;
-import net.factmc.FactBasic.listeners.VanishEvents;
+import net.factmc.FactBukkit.commands.ClearLagCancelCommand;
+import net.factmc.FactBukkit.commands.PointsCommand;
+import net.factmc.FactBukkit.commands.ReloadCommand;
+import net.factmc.FactBukkit.commands.SignEditCommand;
+import net.factmc.FactBukkit.commands.StatsCommand;
+import net.factmc.FactBukkit.commands.TrailsCommand;
+import net.factmc.FactBukkit.gui.StatsGUI;
+import net.factmc.FactBukkit.gui.TrailsGUI;
+import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
+import net.factmc.FactBukkit.listeners.LuckPermsEvents;
+import net.factmc.FactBukkit.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
+
+import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin implements Listener {
 	
@@ -25,6 +33,7 @@ public class Main extends JavaPlugin implements Listener {
 	
 	//public static List<Object> roles = new ArrayList<Object>();
 	
+	public static Economy econ = null;
 	public static boolean useVanish = true;
 	public static boolean gpInstalled = false;
 	public static boolean disableRankTag = false;
@@ -55,6 +64,9 @@ public class Main extends JavaPlugin implements Listener {
     		plugin.getLogger().info("Blocking claiming shovel mining");
     	}
     	
+    	Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+    	setupEconomy();
+    	
     	/*
     	disableRankTag = getServer().getPluginManager().getPlugin("FactHub") != null;
     	if (disableRankTag) {
@@ -64,6 +76,7 @@ public class Main extends JavaPlugin implements Listener {
     	
     	registerEvents();
     	registerCommands();
+    	UpdateTrails.start(plugin);
     	
     	/*RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
         perms = permRSP.getProvider();
@@ -84,7 +97,22 @@ public class Main extends JavaPlugin implements Listener {
     	plugin = null;
     }
     
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+    
     public void registerEvents() {
+    	
+    	getServer().getPluginManager().registerEvents(new StatsGUI(), plugin);
+    	getServer().getPluginManager().registerEvents(new TrailsGUI(), plugin);
     	
     	if (useVanish) {
     		getServer().getPluginManager()
@@ -106,6 +134,9 @@ public class Main extends JavaPlugin implements Listener {
     
     public void registerCommands() {
     	//plugin.getCommand("cmd").setExecutor(this);
+    	getCommand("stats").setExecutor(new StatsCommand());
+    	getCommand("trails").setExecutor(new TrailsCommand());
+    	getCommand("points").setExecutor(new PointsCommand());
     	getCommand("rtag-update").setExecutor(new ReloadCommand());
     	SignEditCommand.load();
     	
@@ -174,122 +205,6 @@ public class Main extends JavaPlugin implements Listener {
     		team.setSuffix(ChatColor.GRAY + "[HIDDEN]");
 		}*/
     	
-    }
-    
-    @Deprecated
-    public static String getColoredRank(String rank) {
-    	rank = rank.toLowerCase();
-    	
-    	ChatColor color;
-    	String name;
-    	switch (rank) {
-    	
-    	case "vip":
-    		color = ChatColor.LIGHT_PURPLE;
-    		name = "VIP";
-    		break;
-    	case "mvp":
-    		color = ChatColor.AQUA;
-    		name = "MVP";
-    		break;
-    	case "youtube":
-    		return ChatColor.BOLD + "You"
-    		+ ChatColor.RED + ChatColor.BOLD + "Tube";
-    	case "helper":
-    		color = ChatColor.GREEN;
-    		name = "Helper";
-    		break;
-    	case "mod":
-    		color = ChatColor.YELLOW;
-    		name = "Mod";
-    		break;
-    	case "admin":
-    		color = ChatColor.RED;
-    		name = "Admin";
-    		break;
-    	case "head-admin":
-    		color = ChatColor.DARK_RED;
-    		name = "Head Admin";
-    		break;
-    	case "owner":
-    		color = ChatColor.GOLD;
-    		name = "Owner";
-    		break;
-    	default:
-    		color = ChatColor.GRAY;
-    		name = "Default";
-    		
-    	}
-    	
-    	return color + "" + ChatColor.BOLD + name;
-    }
-    /*public static ChatColor getRankColor(String rank) {
-    	rank = rank.toLowerCase();
-    	
-    	ChatColor color;
-    	switch (rank) {
-    	
-    	case "vip":
-    		color = ChatColor.LIGHT_PURPLE;
-    		break;
-    	case "mvp":
-    		color = ChatColor.AQUA;
-    		break;
-    	case "youtube":
-    		color = ChatColor.WHITE;
-    	case "helper":
-    		color = ChatColor.GREEN;
-    		break;
-    	case "mod":
-    		color = ChatColor.YELLOW;
-    		break;
-    	case "admin":
-    		color = ChatColor.RED;
-    		break;
-    	case "head-admin":
-    		color = ChatColor.DARK_RED;
-    		break;
-    	case "owner":
-    		color = ChatColor.GOLD;
-    		break;
-    	default:
-    		color = ChatColor.GRAY;
-    		
-    	}
-    	
-    	return color;
-    }*/
-    
-    public static String capFirst(String string) {
-    	StringBuilder sb = new StringBuilder();
-    	
-		for (char c : string.toCharArray()) {
-			sb.append(c);
-		}
-		
-		char firstLetter = sb.charAt(0);
-		String typeLetter = String.valueOf(firstLetter);
-		sb.replace(0, 1, typeLetter.toUpperCase());
-		
-		String finalString = sb.toString();
-		return finalString;
-    }
-    
-    public static String underscoreToSpace(String string) {
-    	String[] words = string.split("_");
-    	if (words.length < 1) return null;
-    	String sepString = "";
-    	for (String word : words) {
-    		sepString += capFirst(word) + " ";
-    	}
-    	
-    	StringBuilder sb = new StringBuilder();
-    	for (char c: sepString.toCharArray()) {
-    		sb.append(c);
-    	}
-    	sb.deleteCharAt(sb.length() - 1);
-    	
-    	return sb.toString();
     }
     
 }

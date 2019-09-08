@@ -91,7 +91,7 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 					sender.sendMessage(ChatColor.GREEN + "You gave " + toName + " " + amount + " points");
 					
 					FactSQLConnector.changePoints(to, amount);
-					sendMessage(player, toName, ChatColor.GREEN + player.getName() + " gave you " + amount + " points");
+					sendMessage(player, toName, ChatColor.GREEN + player.getName() + " gave you " + amount + " point" + (amount > 1 ? "s" : ""));
 					return true;
 					
 				} catch (NumberFormatException e) {

@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
 import me.lucko.luckperms.LuckPerms;
 import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
@@ -35,13 +34,14 @@ public class StatsGUI implements Listener {
 	private static boolean loaded = false;
 	
 	public static void open(Player player, String name) {
-		Inventory gui = player.getServer().createInventory(player, 45, ChatColor.BLUE + name + "'s Stats");
 		
 		UUID uuid = player.getUniqueId();
-		if (!player.getName().equals(name)) {
+		if (!player.getName().equalsIgnoreCase(name)) {
 			uuid = FactSQLConnector.getUUID(name);
 		}
+		name = FactSQLConnector.getName(uuid);
 		
+		Inventory gui = player.getServer().createInventory(player, 45, ChatColor.BLUE + name + "'s Stats");
 		ItemStack head = InventoryControl.getHead(name, "&9Statistics of " + name);
 		
 		String rank = CoreUtils.getColoredRank(uuid);

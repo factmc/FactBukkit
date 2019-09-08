@@ -17,9 +17,7 @@ import net.factmc.FactBukkit.commands.PointsCommand;
 import net.factmc.FactBukkit.commands.ReloadCommand;
 import net.factmc.FactBukkit.commands.SignEditCommand;
 import net.factmc.FactBukkit.commands.StatsCommand;
-import net.factmc.FactBukkit.commands.TrailsCommand;
 import net.factmc.FactBukkit.gui.StatsGUI;
-import net.factmc.FactBukkit.gui.TrailsGUI;
 import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBukkit.listeners.LuckPermsEvents;
 import net.factmc.FactBukkit.listeners.VanishEvents;
@@ -76,7 +74,6 @@ public class Main extends JavaPlugin implements Listener {
     	
     	registerEvents();
     	registerCommands();
-    	UpdateTrails.start(plugin);
     	
     	/*RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
         perms = permRSP.getProvider();
@@ -112,7 +109,6 @@ public class Main extends JavaPlugin implements Listener {
     public void registerEvents() {
     	
     	getServer().getPluginManager().registerEvents(new StatsGUI(), plugin);
-    	getServer().getPluginManager().registerEvents(new TrailsGUI(), plugin);
     	
     	if (useVanish) {
     		getServer().getPluginManager()
@@ -135,7 +131,6 @@ public class Main extends JavaPlugin implements Listener {
     public void registerCommands() {
     	//plugin.getCommand("cmd").setExecutor(this);
     	getCommand("stats").setExecutor(new StatsCommand());
-    	getCommand("trails").setExecutor(new TrailsCommand());
     	getCommand("points").setExecutor(new PointsCommand());
     	getCommand("rtag-update").setExecutor(new ReloadCommand());
     	SignEditCommand.load();

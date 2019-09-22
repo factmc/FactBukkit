@@ -27,6 +27,7 @@ import me.ryanhamshire.GriefPrevention.Claim;
 import me.ryanhamshire.GriefPrevention.DataStore;
 import me.ryanhamshire.GriefPrevention.GriefPrevention;
 import net.factmc.FactBukkit.Main;
+import net.factmc.FactCore.CoreUtils;
 import world.bentobox.bentobox.api.flags.FlagListener;
 
 public class SignEditCommand implements CommandExecutor {
@@ -113,7 +114,7 @@ public class SignEditCommand implements CommandExecutor {
 				return false;
 			}
 			
-			String text = translateColors(sender, combine(args, 1));
+			String text = translateColors(sender, CoreUtils.combine(args, 1));
 			
 			Sign sign = (Sign) block.getState();
 			sign.setLine(line, text);
@@ -143,25 +144,6 @@ public class SignEditCommand implements CommandExecutor {
 			text = text.replaceAll("&" + color.getChar(), "" + color);
 		}
 		return text;
-		
-	}
-	
-	public static String combine(String[] args, int start) {
-		String string = "";
-		
-		for (int i = start; i < args.length; i++) {
-			
-			if (i == args.length - 1) {
-				string += args[i];
-			}
-			
-			else {
-				string += args[i] + " ";
-			}
-			
-		}
-		
-		return string;
 		
 	}
 	

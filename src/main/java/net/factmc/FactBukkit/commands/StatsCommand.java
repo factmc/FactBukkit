@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import net.factmc.FactBukkit.gui.StatsGUI;
-import net.factmc.FactCore.FactSQLConnector;
+import net.factmc.FactCore.FactSQL;
 import net.md_5.bungee.api.ChatColor;
 
 public class StatsCommand implements CommandExecutor, Listener {
@@ -39,7 +39,7 @@ public class StatsCommand implements CommandExecutor, Listener {
         			return true;
         		}
         		
-        		UUID uuid = FactSQLConnector.getUUID(args[0]);
+        		UUID uuid = FactSQL.getInstance().getUUID(args[0]);
         		if (uuid == null) {
         			sender.sendMessage(ChatColor.RED + "Unable to get data for " + args[0]);
         			return false;

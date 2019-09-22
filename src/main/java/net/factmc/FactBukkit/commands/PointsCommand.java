@@ -18,7 +18,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
 import net.factmc.FactBukkit.Main;
-import net.factmc.FactCore.FactSQLConnector;
+import net.factmc.FactCore.FactSQL;
 
 public class PointsCommand implements CommandExecutor, TabExecutor {
 	
@@ -39,20 +39,20 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 			if (args[0].equalsIgnoreCase("show")) {
 				
 				if (args.length > 1 && sender.hasPermission("factbukkit.stats.others")) {
-	        		UUID uuid = FactSQLConnector.getUUID(args[1]);
+	        		UUID uuid = FactSQL.getInstance().getUUID(args[1]);
 	        		if (uuid == null) {
 	        			sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
 						return false;
 	        		}
 	        		
 	        		if (!uuid.equals(player.getUniqueId())) {
-		        		int points = FactSQLConnector.getPoints(uuid);
-						sender.sendMessage(ChatColor.GREEN + FactSQLConnector.getName(uuid) + " has " + points + " points");
+		        		int points = FactSQL.getInstance().getPoints(uuid);
+						sender.sendMessage(ChatColor.GREEN + FactSQL.getInstance().getName(uuid) + " has " + points + " points");
 						return true;
 	        		}
 	        	}
 				
-				int points = FactSQLConnector.getPoints(player.getUniqueId());
+				int points = FactSQL.getInstance().getPoints(player.getUniqueId());
 				sender.sendMessage(ChatColor.GREEN + "You have " + points + " points");
 				//TestGUI.gui.open(player);//DEBUG
 				return true;
@@ -67,7 +67,7 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 					return false;
 				}
 				
-				UUID to = FactSQLConnector.getUUID(args[1]);
+				UUID to = FactSQL.getInstance().getUUID(args[1]);
 				if (to == null) {
 					sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
 					return false;
@@ -81,16 +81,16 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 					
 					int amount = Integer.parseInt(args[2]);
 					if (amount < 1) throw new NumberFormatException();
-					if (FactSQLConnector.getPoints(player.getUniqueId()) < amount) {
+					if (FactSQL.getInstance().getPoints(player.getUniqueId()) < amount) {
 						player.sendMessage(ChatColor.RED + "You do not have that many points");
 						return false;
 					}
 					
-					FactSQLConnector.changePoints(player.getUniqueId(), -amount);
-					String toName = FactSQLConnector.getName(to);
+					FactSQL.getInstance().changePoints(player.getUniqueId(), -amount);
+					String toName = FactSQL.getInstance().getName(to);
 					sender.sendMessage(ChatColor.GREEN + "You gave " + toName + " " + amount + " points");
 					
-					FactSQLConnector.changePoints(to, amount);
+					FactSQL.getInstance().changePoints(to, amount);
 					sendMessage(player, toName, ChatColor.GREEN + player.getName() + " gave you " + amount + " point" + (amount > 1 ? "s" : ""));
 					return true;
 					
@@ -126,7 +126,7 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 					
 					Main.econ.withdrawPlayer(player, requiredBalance);
 					
-					FactSQLConnector.changePoints(player.getUniqueId(), amount);
+					FactSQL.getInstance().changePoints(player.getUniqueId(), amount);
 					sender.sendMessage(ChatColor.GREEN + "You have converted $" + BALANCE_FORMAT.format(requiredBalance) + " into " + amount + " points");
 					return true;
 					

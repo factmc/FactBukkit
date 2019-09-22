@@ -13,6 +13,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -22,7 +23,7 @@ import me.lucko.luckperms.api.Node;
 import me.lucko.luckperms.api.User;
 import net.factmc.FactBukkit.Main;
 import net.factmc.FactCore.CoreUtils;
-import net.factmc.FactCore.FactSQLConnector;
+import net.factmc.FactCore.FactSQL;
 import net.factmc.FactCore.bukkit.InventoryControl;
 
 public class StatsGUI implements Listener {
@@ -37,9 +38,9 @@ public class StatsGUI implements Listener {
 		
 		UUID uuid = player.getUniqueId();
 		if (!player.getName().equalsIgnoreCase(name)) {
-			uuid = FactSQLConnector.getUUID(name);
+			uuid = FactSQL.getInstance().getUUID(name);
 		}
-		name = FactSQLConnector.getName(uuid);
+		name = FactSQL.getInstance().getName(uuid);
 		
 		Inventory gui = player.getServer().createInventory(player, 45, ChatColor.BLUE + name + "'s Stats");
 		ItemStack head = InventoryControl.getHead(name, "&9Statistics of " + name);
@@ -57,10 +58,10 @@ public class StatsGUI implements Listener {
 		}
 		
 		ItemStack points = InventoryControl.getItemStack(Material.DIAMOND,
-				"&6Points: &e" + FactSQLConnector.getPoints(uuid),
+				"&6Points: &e" + FactSQL.getInstance().getPoints(uuid),
 				"&aYou can earn more by &nvoting&a!");
 		ItemStack votes = InventoryControl.getItemStack(Material.CLOCK,
-				"&3Total Votes: &b" + FactSQLConnector.getIntValue(FactSQLConnector.getStatsTable(), uuid, "TOTALVOTES"),
+				"&3Total Votes: &b" + FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "TOTALVOTES"),
 				"&7Click to vote");
 		ItemStack divider = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
 		
@@ -79,7 +80,7 @@ public class StatsGUI implements Listener {
 		player.openInventory(gui);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void itemClicked(InventoryClickEvent event) {
 		if (!loaded) return;
 		final Player player = (Player) event.getWhoClicked();
@@ -121,7 +122,8 @@ public class StatsGUI implements Listener {
 	
 	
 	public static String rankUpgradeGroup(UUID uuid) {
-		long playtime = FactSQLConnector.getLongValue(FactSQLConnector.getStatsTable(), uuid, "PLAYTIME");
+		
+		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
 		
 		if (playtime > VIP_PLAYTIME && LuckPerms.getApi().getUser(uuid).getPrimaryGroup().equals("default")) {
 			return "vip";
@@ -136,7 +138,7 @@ public class StatsGUI implements Listener {
 	
 	public static List<String> rankUpgradeStatus(UUID uuid) {
 		
-		long playtime = FactSQLConnector.getLongValue(FactSQLConnector.getStatsTable(), uuid, "PLAYTIME");
+		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
 		long remaining = 0;
 		String rank = "";
 		List<String> list = new ArrayList<String>();
@@ -172,12 +174,32 @@ public class StatsGUI implements Listener {
 			list.add(ChatColor.GRAY + "Click here to claim it");
 			return list;
 		}
+		
 		else {
 			list.add(ChatColor.RED + "You need to have another");
-			list.add(ChatColor.RED + CoreUtils.convertSeconds(remaining) + (remaining >= 3600 ? " of" : " of playtime"));
-			list.add(ChatColor.RED + (remaining >= 3600 ? "playtime " : "") + "to claim " + rank + ChatColor.RED + " rank!");
+			list.addAll(displaySeconds(remaining, rank));
 			return list;
 		}
+		
+	}
+	
+	public static List<String> displaySeconds(long seconds, String rank) {
+		List<String> list = new ArrayList<String>();
+		
+		long mins = Math.round(seconds / 60.0);
+		long minutes = mins % 60;
+		long hours = (mins - minutes) / 60;
+		
+		if (hours > 0) {
+			list.add(ChatColor.RED + "" + hours + " hours and " + minutes + " minutes of");
+			list.add(ChatColor.RED + "playtime to claim " + rank + ChatColor.RED + " rank!");
+		}
+		else {
+			list.add(ChatColor.RED + "" + minutes + " minutes of platime");
+			list.add(ChatColor.RED + "to claim " + rank + ChatColor.RED + " rank!");
+		}
+		
+		return list;
 		
 	}
 	

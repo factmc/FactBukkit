@@ -1,6 +1,6 @@
-name: FactBukkit
-main: net.factmc.FactBukkit.Main
-version: 1.10.1
+name: ${project.artifactId}
+main: ${project.groupId}.Main
+version: ${project.version}
 author: TrollyLoki
 
 depend: [LuckPerms, FactCore]

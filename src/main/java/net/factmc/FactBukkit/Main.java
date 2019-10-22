@@ -1,7 +1,12 @@
 package net.factmc.FactBukkit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,7 +27,7 @@ import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBukkit.listeners.LuckPermsEvents;
 import net.factmc.FactBukkit.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
-
+import net.factmc.FactCore.bukkit.CustomBossbar;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin implements Listener {
@@ -40,6 +45,7 @@ public class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
     	plugin = this;
+    	saveDefaultConfig();
     	
     	/*useFactions = getServer().getPluginManager().getPlugin("Factions") != null;
     	if (useFactions) {
@@ -74,6 +80,9 @@ public class Main extends JavaPlugin implements Listener {
     	
     	registerEvents();
     	registerCommands();
+    	
+    	loadBossBar();
+    	plugin.getLogger().info("Loaded BossBar");
     	
     	/*RegisteredServiceProvider<Permission> permRSP = getServer().getServicesManager().getRegistration(Permission.class);
         perms = permRSP.getProvider();
@@ -140,6 +149,25 @@ public class Main extends JavaPlugin implements Listener {
     		getServer().getPluginManager().registerEvents(new ClearLagCancelCommand(), plugin);
     		plugin.getLogger().info("Registered ClearLag cancel command");
     	}
+    }
+    
+    public void loadBossBar() {
+    	List<String> titles = new ArrayList<String>();
+    	for (String title : getConfig().getStringList("bossbar.title")) {
+    		titles.add(ChatColor.translateAlternateColorCodes('&', title));
+    	}
+    	
+    	List<BarColor> colors = new ArrayList<BarColor>();
+    	for (String color : getConfig().getStringList("bossbar.color")) {
+    		colors.add(BarColor.valueOf(color));
+    	}
+    	List<BarStyle> styles = new ArrayList<BarStyle>();
+    	for (String style : getConfig().getStringList("bossbar.style")) {
+    		styles.add(BarStyle.valueOf(style));
+    	}
+    	
+    	int rate = (int) (getConfig().getDouble("bossbar.rate") * 20);
+    	new CustomBossbar(plugin, titles, colors, styles, rate);
     }
     
     public static JavaPlugin getPlugin() {

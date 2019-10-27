@@ -11,6 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,13 +31,13 @@ import net.factmc.FactBukkit.Main;
 import net.factmc.FactCore.CoreUtils;
 import world.bentobox.bentobox.api.flags.FlagListener;
 
-public class SignEditCommand implements CommandExecutor {
+public class SignEditCommand implements CommandExecutor, TabCompleter {
 	
 	private static boolean griefPrevention = false, plotSquared = false, worldGuard = false, bSkyblock = false, hub = false;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (command.getName().equals("edit")) {
+		if (command.getName().equalsIgnoreCase("edit")) {
 			
 			if (!(sender instanceof Player)) {
 				sender.sendMessage(ChatColor.RED + "Only players can use that command");
@@ -126,6 +127,20 @@ public class SignEditCommand implements CommandExecutor {
 		return false;
 	}
 	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		if (command.getName().equalsIgnoreCase("edit")) {
+			
+			if (args.length < 2) return CoreUtils.filter(CoreUtils.toList("1", "2", "3", "4"), args[0]);
+			
+			return CoreUtils.toList();
+			
+		}
+		
+		return null;
+	}
+	
+	
 	public static String translateColors(CommandSender sender, String text) {
 		
 		List<ChatColor> toTranslate = new ArrayList<ChatColor>();
@@ -146,7 +161,6 @@ public class SignEditCommand implements CommandExecutor {
 		return text;
 		
 	}
-	
 	
 	
 	public static void load() {

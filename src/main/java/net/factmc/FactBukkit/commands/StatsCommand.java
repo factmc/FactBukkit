@@ -1,21 +1,26 @@
 package net.factmc.FactBukkit.commands;
 
+import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import net.factmc.FactBukkit.gui.StatsGUI;
+import net.factmc.FactCore.CoreUtils;
 import net.factmc.FactCore.FactSQL;
+import net.factmc.FactCore.bukkit.BukkitMain;
 import net.md_5.bungee.api.ChatColor;
 
-public class StatsCommand implements CommandExecutor, Listener {
+public class StatsCommand implements CommandExecutor, TabCompleter, Listener {
 	
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("stats")) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equalsIgnoreCase("stats")) {
         	
         	boolean isPlayer = false;
         	Player player = null;
@@ -33,7 +38,7 @@ public class StatsCommand implements CommandExecutor, Listener {
         		return true;
         	}
         	
-        	else if (args.length == 1) {
+        	else if (args.length > 0) {
         		if (!sender.hasPermission("facthub.stats.others")) {
         			if (isPlayer) StatsGUI.open(player, player.getName());
         			return true;
@@ -52,7 +57,21 @@ public class StatsCommand implements CommandExecutor, Listener {
         	return true;
         	
         }
+        
 		return false;   
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		if (command.getName().equalsIgnoreCase("stats")) {
+			
+			if (args.length < 2) return CoreUtils.filter(BukkitMain.toList(Bukkit.getOnlinePlayers()), args[0]);
+			
+			return CoreUtils.toList();
+			
+		}
+		
+		return null;
 	}
 
 }

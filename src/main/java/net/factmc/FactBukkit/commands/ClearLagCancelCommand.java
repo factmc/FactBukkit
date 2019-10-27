@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Item;
@@ -18,8 +19,9 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 
 import me.minebuilders.clearlag.events.EntityRemoveEvent;
 import net.factmc.FactBukkit.Main;
+import net.factmc.FactCore.CoreUtils;
 
-public class ClearLagCancelCommand implements Listener, CommandExecutor {
+public class ClearLagCancelCommand implements CommandExecutor, TabCompleter, Listener {
 	
 	private static boolean cancelNext = false;
 	private static List<Entity> deathDrops = new ArrayList<Entity>();
@@ -31,8 +33,8 @@ public class ClearLagCancelCommand implements Listener, CommandExecutor {
 		desc = "Cancel an automatic removal";
 	}*/
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (cmd.getName().equalsIgnoreCase("cancelclear") && sender.hasPermission("lagg.cancel")) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+		if (command.getName().equalsIgnoreCase("cancelclear") && sender.hasPermission("lagg.cancel")) {
 			if (sender.hasPermission("lagg.uncancel") && cancelNext) {
 				cancelNext = false;
 				sender.sendMessage(ChatColor.AQUA + "The next automatic clear will no longer be cancelled");
@@ -44,6 +46,17 @@ public class ClearLagCancelCommand implements Listener, CommandExecutor {
 			return true;
 		}
 		return false;
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+		if (command.getName().equalsIgnoreCase("cancelclear")) {
+			
+			return CoreUtils.toList();
+			
+		}
+		
+		return null;
 	}
 	
 	

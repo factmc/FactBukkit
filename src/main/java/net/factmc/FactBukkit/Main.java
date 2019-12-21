@@ -15,8 +15,6 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Group;
 import net.factmc.FactBukkit.commands.ClearLagCancelCommand;
 import net.factmc.FactBukkit.commands.PointsCommand;
 import net.factmc.FactBukkit.commands.ReloadCommand;
@@ -28,6 +26,8 @@ import net.factmc.FactBukkit.listeners.LuckPermsEvents;
 import net.factmc.FactBukkit.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
 import net.factmc.FactCore.bukkit.CustomBossbar;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.group.Group;
 import net.milkbowl.vault.economy.Economy;
 
 public class Main extends JavaPlugin implements Listener {
@@ -193,7 +193,7 @@ public class Main extends JavaPlugin implements Listener {
     		}
     	}*/
     	
-		for (Group raw : LuckPerms.getApi().getGroups()) {
+		for (Group raw : LuckPermsProvider.get().getGroupManager().getLoadedGroups()) {
 			String group = raw.getName();
     		for (int i = 0; i < 2; i++) {
     			String add = "";

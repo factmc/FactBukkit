@@ -5,8 +5,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,13 +19,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import me.lucko.luckperms.LuckPerms;
-import me.lucko.luckperms.api.Node;
-import me.lucko.luckperms.api.User;
 import net.factmc.FactBukkit.Main;
 import net.factmc.FactCore.CoreUtils;
 import net.factmc.FactCore.FactSQL;
 import net.factmc.FactCore.bukkit.InventoryControl;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.node.Node;
+import net.luckperms.api.node.NodeType;
+import net.luckperms.api.node.types.InheritanceNode;
 
 public class StatsGUI implements Listener {
 	
@@ -103,17 +106,15 @@ public class StatsGUI implements Listener {
 			else if (loreList.size() == 4) {
 				String upgradeGroup = rankUpgradeGroup(player.getUniqueId());
 				if (upgradeGroup != null) {
-					try {
-						User user = LuckPerms.getApi().getUserManager().loadUser(player.getUniqueId()).get();
-						user.clearParents();
-						Node node = LuckPerms.getApi().getNodeFactory().makeGroupNode(upgradeGroup).build();
-						user.setPermission(node);
-						LuckPerms.getApi().getUserManager().saveUser(user);
-						open(player, player.getName());
-						broadcastUpgrade(player, CoreUtils.getColoredRank(upgradeGroup));
-					} catch (ExecutionException | InterruptedException e) {
-						e.printStackTrace();
-					}
+					User user = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId());
+					Set<Node> groups = user.getNodes().stream().filter(NodeType.INHERITANCE::matches).collect(Collectors.toSet());
+					groups.forEach(node -> user.data().remove(node));
+					
+					Node node = InheritanceNode.builder(upgradeGroup).build();
+					user.data().add(node);
+					LuckPermsProvider.get().getUserManager().saveUser(user);
+					open(player, player.getName());
+					broadcastUpgrade(player, CoreUtils.getColoredRank(upgradeGroup));
 				}
 			}
 			
@@ -125,11 +126,11 @@ public class StatsGUI implements Listener {
 		
 		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
 		
-		if (playtime > VIP_PLAYTIME && LuckPerms.getApi().getUser(uuid).getPrimaryGroup().equals("default")) {
+		if (playtime > VIP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
 			return "vip";
 		}
 
-		else if (playtime > MVP_PLAYTIME && LuckPerms.getApi().getUser(uuid).getPrimaryGroup().equals("vip")) {
+		else if (playtime > MVP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
 			return "mvp";
 		}
 		
@@ -147,7 +148,7 @@ public class StatsGUI implements Listener {
 			remaining = VIP_PLAYTIME - playtime;
 			rank = CoreUtils.getColoredRank("vip");
 		}
-		else if (playtime > VIP_PLAYTIME && LuckPerms.getApi().getUser(uuid).getPrimaryGroup().equals("default")) {
+		else if (playtime > VIP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
 			rank = CoreUtils.getColoredRank("vip");
 		}
 		
@@ -155,7 +156,7 @@ public class StatsGUI implements Listener {
 			remaining = MVP_PLAYTIME - playtime;
 			rank = CoreUtils.getColoredRank("mvp");
 		}
-		else if (playtime > MVP_PLAYTIME && LuckPerms.getApi().getUser(uuid).getPrimaryGroup().equals("vip")) {
+		else if (playtime > MVP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
 			rank = CoreUtils.getColoredRank("mvp");
 		}
 		

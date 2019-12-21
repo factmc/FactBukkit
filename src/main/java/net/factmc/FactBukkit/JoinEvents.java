@@ -9,7 +9,7 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import de.myzelyam.api.vanish.VanishAPI;
-import me.lucko.luckperms.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 
 public class JoinEvents implements Listener {
 	
@@ -33,7 +33,7 @@ public class JoinEvents implements Listener {
 			TeamManager.changeTeam(player);
 		}*/
 		
-    	String rank = LuckPerms.getApi().getUser(player.getUniqueId()).getPrimaryGroup();
+    	String rank = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId()).getPrimaryGroup();
 		String add = "";
 		if (VanishAPI.isInvisible(player)) add = "v";
 		

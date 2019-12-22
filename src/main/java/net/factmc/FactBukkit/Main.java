@@ -18,8 +18,11 @@ import org.bukkit.scoreboard.Team.OptionStatus;
 import net.factmc.FactBukkit.commands.ClearLagCancelCommand;
 import net.factmc.FactBukkit.commands.PointsCommand;
 import net.factmc.FactBukkit.commands.ReloadCommand;
+import net.factmc.FactBukkit.commands.ServersCommand;
 import net.factmc.FactBukkit.commands.SignEditCommand;
 import net.factmc.FactBukkit.commands.StatsCommand;
+import net.factmc.FactBukkit.commands.VoteCommand;
+import net.factmc.FactBukkit.gui.ServerGUI;
 import net.factmc.FactBukkit.gui.StatsGUI;
 import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBukkit.listeners.LuckPermsEvents;
@@ -68,7 +71,7 @@ public class Main extends JavaPlugin implements Listener {
     		plugin.getLogger().info("Blocking claiming shovel mining");
     	}
     	
-    	Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+    	getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     	setupEconomy();
     	
     	/*
@@ -118,6 +121,7 @@ public class Main extends JavaPlugin implements Listener {
     public void registerEvents() {
     	
     	getServer().getPluginManager().registerEvents(new StatsGUI(), plugin);
+    	getServer().getPluginManager().registerEvents(new ServerGUI(), plugin);
     	
     	if (useVanish) {
     		getServer().getPluginManager()
@@ -142,6 +146,9 @@ public class Main extends JavaPlugin implements Listener {
     	getCommand("stats").setExecutor(new StatsCommand());
     	getCommand("points").setExecutor(new PointsCommand());
     	getCommand("rtag-update").setExecutor(new ReloadCommand());
+    	plugin.getCommand("vote").setExecutor(new VoteCommand());
+    	plugin.getCommand("servers").setExecutor(new ServersCommand());
+    	
     	SignEditCommand.load();
     	
     	if (getServer().getPluginManager().getPlugin("ClearLag") != null) {

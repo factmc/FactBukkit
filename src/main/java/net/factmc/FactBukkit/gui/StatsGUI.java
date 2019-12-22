@@ -46,13 +46,13 @@ public class StatsGUI implements Listener {
 		name = FactSQL.getInstance().getName(uuid);
 		
 		Inventory gui = player.getServer().createInventory(player, 45, ChatColor.BLUE + name + "'s Stats");
-		ItemStack head = InventoryControl.getHead(name, "&9Statistics of " + name);
+		ItemStack head = InventoryControl.getHead(name, name);
 		
 		String rank = CoreUtils.getColoredRank(uuid);
-		String group = CoreUtils.getRankGroup(uuid);
+		String playtime = CoreUtils.convertSeconds((long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME"));
 		ItemStack role = InventoryControl.getItemStack(Material.ENDER_EYE,
-				"&2Rank: " + rank,
-				"&5Group: &d" + group);
+				"&aRank: " + rank,
+				"&9Playtime: &b" + playtime);
 		
 		if (player.getName().equals(name)) {
 			ItemStack upgrade = InventoryControl.getItemStack(Material.TOTEM_OF_UNDYING, "&dRank Upgrade", rankUpgradeStatus(uuid));
@@ -60,7 +60,7 @@ public class StatsGUI implements Listener {
 			gui.setItem(32, upgrade);
 		}
 		
-		ItemStack points = InventoryControl.getItemStack(Material.DIAMOND,
+		ItemStack points = InventoryControl.getItemStack(Material.SUNFLOWER,
 				"&6Points: &e" + FactSQL.getInstance().getPoints(uuid),
 				"&aYou can earn more by &nvoting&a!");
 		ItemStack votes = InventoryControl.getItemStack(Material.CLOCK,

@@ -15,3 +15,5 @@ commands:
   cancelclear:
   edit:
   stats:
+  vote:
+  servers:

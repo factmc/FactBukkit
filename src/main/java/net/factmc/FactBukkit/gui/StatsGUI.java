@@ -144,20 +144,18 @@ public class StatsGUI implements Listener {
 		String rank = "";
 		List<String> list = new ArrayList<String>();
 		
-		if (playtime < VIP_PLAYTIME) {
-			remaining = VIP_PLAYTIME - playtime;
+		if (LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
 			rank = CoreUtils.getColoredRank("vip");
-		}
-		else if (playtime > VIP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
-			rank = CoreUtils.getColoredRank("vip");
+			if (playtime < VIP_PLAYTIME) {
+				remaining = VIP_PLAYTIME - playtime;
+			}
 		}
 		
-		else if (playtime < MVP_PLAYTIME) {
-			remaining = MVP_PLAYTIME - playtime;
+		else if (LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
 			rank = CoreUtils.getColoredRank("mvp");
-		}
-		else if (playtime > MVP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
-			rank = CoreUtils.getColoredRank("mvp");
+			if (playtime < MVP_PLAYTIME) {
+				remaining = MVP_PLAYTIME - playtime;
+			}
 		}
 		
 		else {

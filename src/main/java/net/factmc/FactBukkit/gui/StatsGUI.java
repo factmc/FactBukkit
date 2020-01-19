@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,10 +31,6 @@ import net.luckperms.api.node.NodeType;
 import net.luckperms.api.node.types.InheritanceNode;
 
 public class StatsGUI implements Listener {
-	
-	public static final int VIP_PLAYTIME = 172800; // 48 Hours
-	public static final int MVP_PLAYTIME = 604800; // 168 Hours (7 days)
-	
 	
 	private static boolean loaded = false;
 	
@@ -126,12 +123,20 @@ public class StatsGUI implements Listener {
 		
 		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
 		
-		if (playtime > VIP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
-			return "vip";
-		}
-
-		else if (playtime > MVP_PLAYTIME && LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
-			return "mvp";
+		String currentGroup = LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup();
+		ConfigurationSection playtimeRanks = Main.getPlugin().getConfig().getConfigurationSection("playtime-ranks");
+		for (String k : playtimeRanks.getKeys(false)) {
+			
+			if (currentGroup.equals(playtimeRanks.getString(k + ".prerequisite"))) {
+				
+				int requiredPlaytime = playtimeRanks.getInt(k + ".playtime");
+				if (playtime >= requiredPlaytime) {
+					return k;
+				}
+				break;
+				
+			}
+			
 		}
 		
 		return null;
@@ -144,21 +149,24 @@ public class StatsGUI implements Listener {
 		String rank = "";
 		List<String> list = new ArrayList<String>();
 		
-		if (LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("default")) {
-			rank = CoreUtils.getColoredRank("vip");
-			if (playtime < VIP_PLAYTIME) {
-				remaining = VIP_PLAYTIME - playtime;
+		String currentGroup = LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup();
+		ConfigurationSection playtimeRanks = Main.getPlugin().getConfig().getConfigurationSection("playtime-ranks");
+		for (String k : playtimeRanks.getKeys(false)) {
+			
+			if (currentGroup.equals(playtimeRanks.getString(k + ".prerequisite"))) {
+				
+				rank = CoreUtils.getColoredRank(k);
+				int requiredPlaytime = playtimeRanks.getInt(k + ".playtime");
+				if (playtime < requiredPlaytime) {
+					remaining = requiredPlaytime - playtime;
+				}
+				break;
+				
 			}
+			
 		}
 		
-		else if (LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup().equals("vip")) {
-			rank = CoreUtils.getColoredRank("mvp");
-			if (playtime < MVP_PLAYTIME) {
-				remaining = MVP_PLAYTIME - playtime;
-			}
-		}
-		
-		else {
+		if (rank.equals("")) {
 			list.add(ChatColor.AQUA + "You have already claimed");
 			list.add(ChatColor.AQUA + "all available ranks");
 			list.add(ChatColor.AQUA + "Thanks for the support!");
@@ -194,7 +202,7 @@ public class StatsGUI implements Listener {
 			list.add(ChatColor.RED + "playtime to claim " + rank + ChatColor.RED + " rank!");
 		}
 		else {
-			list.add(ChatColor.RED + "" + minutes + " minutes of platime");
+			list.add(ChatColor.RED + "" + minutes + " minutes of playtime");
 			list.add(ChatColor.RED + "to claim " + rank + ChatColor.RED + " rank!");
 		}
 		

@@ -50,3 +50,11 @@ bossbar:
   - 'PURPLE'
   style:
   - 'SOLID'
+  
+playtime-ranks:
+  vip:
+    playtime: 172800 # 48 hours
+    prerequisite: default
+  mvp:
+    playtime: 604800 # 168 Hours (7 days)
+    prerequisite: vip

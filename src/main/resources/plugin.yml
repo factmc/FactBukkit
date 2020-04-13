@@ -4,7 +4,7 @@ version: ${project.version}
 author: TrollyLoki
 
 depend: [LuckPerms, FactCore]
-softdepend: [Vault, SuperVanish, ClearLag, GriefPrevention, PlotSquared, WorldGuard]
+softdepend: [Vault, SuperVanish, ClearLag, GriefPrevention, PlotSquared, WorldEdit, WorldGuard]
 
 api-version: 1.15
 

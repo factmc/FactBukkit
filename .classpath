@@ -26,6 +26,5 @@
 	<classpathentry kind="lib" path="/Libraries/bukkit/GriefPrevention.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/PlotSquared-Bukkit-4.298.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/worldguard-bukkit-7.0.1-beta-01.jar"/>
-	<classpathentry kind="lib" path="/Libraries/bukkit/FastAsyncWorldEdit-bukkit-1.14.15.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

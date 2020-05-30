@@ -34,34 +34,50 @@ public class StatsGUI implements Listener {
 	
 	private static boolean loaded = false;
 	
-	public static void open(Player player, String name) {
-		
-		UUID uuid = player.getUniqueId();
-		if (!player.getName().equalsIgnoreCase(name)) {
-			uuid = FactSQL.getInstance().getUUID(name);
-		}
-		name = FactSQL.getInstance().getName(uuid);
+	public static void open(Player player, String inputName) {
+		FactSQL.getInstance().select(FactSQL.getStatsTable(), new String[] {"UUID", "NAME", "PLAYTIME", "POINTS", "TOTALVOTES"}, "`NAME`=?", inputName).thenAccept((list) -> {
+			
+			if (list.isEmpty()) {
+				player.sendMessage(ChatColor.RED + "Unable to get data for " + inputName);
+			}
+			
+			else {
+				UUID uuid = UUID.fromString((String) list.get(0).get("UUID"));
+				CoreUtils.getColoredRank(uuid).thenAccept((coloredRank) -> {
+					
+					String name = (String) list.get(0).get("NAME");
+					long playtime = (long) list.get(0).get("PLAYTIME");
+					int points = (int) list.get(0).get("POINTS");
+					int totalVotes = (int) list.get(0).get("TOTALVOTES");
+					Bukkit.getScheduler().runTask(Main.getPlugin(), () -> open(player, name, uuid, coloredRank, playtime, points, totalVotes));
+					
+				});
+			}
+			
+		});
+	}
+	
+	public static void open(Player player, String name, UUID uuid, String rank, long playtimeSeconds, int pointsInt, int totalVotes) {
 		
 		Inventory gui = player.getServer().createInventory(player, 45, ChatColor.BLUE + name + "'s Stats");
 		ItemStack head = InventoryControl.getHead(name, name);
 		
-		String rank = CoreUtils.getColoredRank(uuid);
-		String playtime = CoreUtils.convertSeconds((long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME"));
+		String playtime = CoreUtils.convertSeconds(playtimeSeconds);
 		ItemStack role = InventoryControl.getItemStack(Material.ENDER_EYE,
 				"&aRank: " + rank,
 				"&9Playtime: &b" + playtime);
 		
 		if (player.getName().equals(name)) {
-			ItemStack upgrade = InventoryControl.getItemStack(Material.TOTEM_OF_UNDYING, "&dRank Upgrade", rankUpgradeStatus(uuid));
+			ItemStack upgrade = InventoryControl.getItemStack(Material.TOTEM_OF_UNDYING, "&dRank Upgrade", rankUpgradeStatus(uuid, playtimeSeconds));
 					
 			gui.setItem(32, upgrade);
 		}
 		
 		ItemStack points = InventoryControl.getItemStack(Material.SUNFLOWER,
-				"&6Points: &e" + FactSQL.getInstance().getPoints(uuid),
+				"&6Points: &e" + pointsInt,
 				"&aYou can earn more by &nvoting&a!");
 		ItemStack votes = InventoryControl.getItemStack(Material.CLOCK,
-				"&3Total Votes: &b" + FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "TOTALVOTES"),
+				"&3Total Votes: &b" + totalVotes,
 				"&7Click to vote");
 		ItemStack divider = new ItemStack(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
 		
@@ -101,27 +117,29 @@ public class StatsGUI implements Listener {
 			}
 			
 			else if (loreList.size() == 4) {
-				String upgradeGroup = rankUpgradeGroup(player.getUniqueId());
-				if (upgradeGroup != null) {
-					User user = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId());
-					Set<Node> groups = user.getNodes().stream().filter(NodeType.INHERITANCE::matches).collect(Collectors.toSet());
-					groups.forEach(node -> user.data().remove(node));
+				FactSQL.getInstance().get(FactSQL.getStatsTable(), player.getUniqueId(), "PLAYTIME").thenAccept((playtime) -> {
 					
-					Node node = InheritanceNode.builder(upgradeGroup).build();
-					user.data().add(node);
-					LuckPermsProvider.get().getUserManager().saveUser(user);
-					open(player, player.getName());
-					broadcastUpgrade(player, CoreUtils.getColoredRank(upgradeGroup));
-				}
+					String upgradeGroup = rankUpgradeGroup(player.getUniqueId(), (long) playtime);
+					if (upgradeGroup != null) {
+						User user = LuckPermsProvider.get().getUserManager().getUser(player.getUniqueId());
+						Set<Node> groups = user.getNodes().stream().filter(NodeType.INHERITANCE::matches).collect(Collectors.toSet());
+						groups.forEach(node -> user.data().remove(node));
+						
+						Node node = InheritanceNode.builder(upgradeGroup).build();
+						user.data().add(node);
+						LuckPermsProvider.get().getUserManager().saveUser(user);
+						open(player, player.getName());
+						broadcastUpgrade(player, CoreUtils.getColoredRank(upgradeGroup));
+					}
+					
+				});
 			}
 			
 		}
 	}
 	
 	
-	public static String rankUpgradeGroup(UUID uuid) {
-		
-		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
+	public static String rankUpgradeGroup(UUID uuid, long playtime) {
 		
 		String currentGroup = LuckPermsProvider.get().getUserManager().getUser(uuid).getPrimaryGroup();
 		ConfigurationSection playtimeRanks = Main.getPlugin().getConfig().getConfigurationSection("playtime-ranks");
@@ -142,9 +160,8 @@ public class StatsGUI implements Listener {
 		return null;
 	}
 	
-	public static List<String> rankUpgradeStatus(UUID uuid) {
+	public static List<String> rankUpgradeStatus(UUID uuid, long playtime) {
 		
-		long playtime = (long) FactSQL.getInstance().get(FactSQL.getStatsTable(), uuid, "PLAYTIME");
 		long remaining = 0;
 		String rank = "";
 		List<String> list = new ArrayList<String>();

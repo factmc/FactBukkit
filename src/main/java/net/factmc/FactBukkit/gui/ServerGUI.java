@@ -109,7 +109,7 @@ public class ServerGUI implements Listener {
 				}
 				
 			}
-		}, (long) 20);
+		}, 20L);
 		
 	}
 	

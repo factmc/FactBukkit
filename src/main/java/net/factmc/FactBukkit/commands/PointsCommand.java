@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -40,23 +39,37 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 				if (args[0].equalsIgnoreCase("show")) {
 					
 					if (args.length > 1 && sender.hasPermission("factbukkit.stats.others")) {
-		        		UUID uuid = FactSQL.getInstance().getUUID(args[1]);
-		        		if (uuid == null) {
-		        			sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
-							return false;
-		        		}
-		        		
-		        		if (!uuid.equals(player.getUniqueId())) {
-			        		int points = FactSQL.getInstance().getPoints(uuid);
-							sender.sendMessage(ChatColor.GREEN + FactSQL.getInstance().getName(uuid) + " has " + points + " points");
-							return true;
-		        		}
+		        		FactSQL.getInstance().select(FactSQL.getStatsTable(), new String[] {"UUID", "NAME", "POINTS"}, "`NAME`=?", args[1]).thenAccept((list) -> {
+		        			
+		        			if (list.isEmpty()) {
+			        			sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
+			        		}
+			        		
+		        			else {
+		        				
+			        			UUID uuid = UUID.fromString((String) list.get(0).get("UUID"));
+			        			int points = (int) list.get(0).get("POINTS");
+			        			if (!uuid.equals(player.getUniqueId())) {
+			        				String name = (String) list.get(0).get("NAME");
+				        			sender.sendMessage(ChatColor.GREEN + name + " has " + points + " points");
+				        		}
+			        			
+			        			else {
+			        				sender.sendMessage(ChatColor.GREEN + "You have " + points + " points");
+			        			}
+			        			
+		        			}
+		        			
+		        		});
+		        		return true;
 		        	}
 					
-					int points = FactSQL.getInstance().getPoints(player.getUniqueId());
-					sender.sendMessage(ChatColor.GREEN + "You have " + points + " points");
-					//TestGUI.gui.open(player);//DEBUG
-					return true;
+					else {
+						FactSQL.getInstance().getPoints(player.getUniqueId()).thenAccept((points) -> {
+							sender.sendMessage(ChatColor.GREEN + "You have " + points + " points");
+						});
+						return true;
+					}
 					
 				}
 				
@@ -68,37 +81,47 @@ public class PointsCommand implements CommandExecutor, TabExecutor {
 						return false;
 					}
 					
-					UUID to = FactSQL.getInstance().getUUID(args[1]);
-					if (to == null) {
-						sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
-						return false;
-					}
-					else if (to.equals(player.getUniqueId())) {
-						sender.sendMessage(ChatColor.RED + "You can not pay yourself");
-						return false;
-					}
-					
-					try {
+					FactSQL.getInstance().select(FactSQL.getStatsTable(), new String[] {"UUID", "NAME", "POINTS"}, "`NAME`=?", args[1]).thenAccept((list) -> {
 						
-						int amount = Integer.parseInt(args[2]);
-						if (amount < 1) throw new NumberFormatException();
-						if (FactSQL.getInstance().getPoints(player.getUniqueId()) < amount) {
-							player.sendMessage(ChatColor.RED + "You do not have that many points");
-							return false;
+						if (list.isEmpty()) {
+							sender.sendMessage(ChatColor.RED + args[1] + " has never joined the server");
+							return;
 						}
 						
-						FactSQL.getInstance().changePoints(player.getUniqueId(), -amount);
-						String toName = FactSQL.getInstance().getName(to);
-						sender.sendMessage(ChatColor.GREEN + "You gave " + toName + " " + amount + " points");
+						UUID to = UUID.fromString((String) list.get(0).get("UUID"));
+						if (to.equals(player.getUniqueId())) {
+							sender.sendMessage(ChatColor.RED + "You can not pay yourself");
+							return;
+						}
 						
-						FactSQL.getInstance().changePoints(to, amount);
-						sendMessage(player, toName, ChatColor.GREEN + player.getName() + " gave you " + amount + " point" + (amount > 1 ? "s" : ""));
-						return true;
+						try {
+							
+							int amount = Integer.parseInt(args[2]);
+							if (amount < 1) throw new NumberFormatException();
+							
+							String toName = (String) list.get(0).get("NAME");
+							FactSQL.getInstance().getPoints(player.getUniqueId()).thenAccept(points -> {
+								
+								if (points < amount) {
+									sender.sendMessage(ChatColor.RED + "You do not have that many points");
+									return;
+								}
+								
+								FactSQL.getInstance().setPoints(player.getUniqueId(), points - amount);
+								sender.sendMessage(ChatColor.GREEN + "You gave " + toName + " " + amount + " points");
+								
+								FactSQL.getInstance().setPoints(to, (int) (list.get(0).get("POINTS")) + amount);
+								sendMessage(player, toName, ChatColor.GREEN + player.getName() + " gave you " + amount + " point" + (amount > 1 ? "s" : ""));
+								
+							});
+							
+						} catch (NumberFormatException e) {
+							sender.sendMessage(ChatColor.RED + "That is not a valid number");
+							return;
+						}
 						
-					} catch (NumberFormatException e) {
-						sender.sendMessage(ChatColor.RED + "That is not a valid number");
-						return false;
-					}
+					});
+					return true;
 					
 				}
 				

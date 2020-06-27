@@ -32,7 +32,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.15.1-R0.1-SNAPSHOT</version>
+			<version>1.16.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -43,9 +43,9 @@
 		</dependency>
 		<dependency>
 			<groupId>de.myzelyam</groupId>
-			<artifactId>SuperVanish</artifactId>
-			<version>6.1.3</version>
-			<scope>provided</scope>
+            <artifactId>SuperVanish</artifactId>
+            <version>6.1.3</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MilkBowl</groupId>

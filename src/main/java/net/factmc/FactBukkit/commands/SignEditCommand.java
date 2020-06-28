@@ -49,8 +49,8 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 			
-			if (args.length < 2) {
-				sender.sendMessage(ChatColor.RED + "Usage: /edit <line> <text>");
+			if (args.length < 1) {
+				sender.sendMessage(ChatColor.RED + "Usage: /edit <line> [text]");
 				return false;
 			}
 			
@@ -115,7 +115,7 @@ public class SignEditCommand implements CommandExecutor, TabCompleter {
 				return false;
 			}
 			
-			String text = translateColors(sender, CoreUtils.combine(args, 1));
+			String text = args.length < 2 ? "" : translateColors(sender, CoreUtils.combine(args, 1));
 			
 			Sign sign = (Sign) block.getState();
 			sign.setLine(line, text);

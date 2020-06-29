@@ -5,6 +5,8 @@ sites:
     
 clearlag:
   enabled: true
+  warning-message: '&eRemoved &6%removed%&e entities'
+  clear-message: '&4&lWarning!&c Ground items will be removed in &6%remaining%&c seconds. Use &6/clearlag cancel&c to cancel the next clear'
   hide-messages: false
   interval: 900 # 15 minutes
   warnings:

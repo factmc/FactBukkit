@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -19,14 +18,17 @@ public class ClearLagTask extends BukkitRunnable {
 	
 	private int interval;
 	private Integer[] warnings;
+	private String warningMessage, clearMessage;
 	private boolean hideMessages;
 	private Class<?>[] removeTypes;
 	private int counter;
 	private boolean cancelled;
 	
-	public ClearLagTask(Plugin plugin, int interval, Integer[] warnings, boolean hideMessages, Class<?>[] removeTypes) {
+	public ClearLagTask(Plugin plugin, int interval, Integer[] warnings, String warningMessage, String clearMessage, boolean hideMessages, Class<?>[] removeTypes) {
 		this.interval = interval;
 		this.warnings = warnings;
+		this.warningMessage = warningMessage;
+		this.clearMessage = clearMessage;
 		this.hideMessages = hideMessages;
 		this.removeTypes = removeTypes;
 		this.counter = 0;
@@ -42,7 +44,7 @@ public class ClearLagTask extends BukkitRunnable {
 		if (counter == interval) {
 			if (!cancelled) {
 				int removed = execute();
-				sendMessage(ChatColor.YELLOW + "Removed " + ChatColor.GOLD + removed + ChatColor.YELLOW + " entities");
+				sendMessage(clearMessage.replaceAll("%removed%", "" + removed));
 			}
 			counter = 0;
 			cancelled = false;
@@ -53,9 +55,7 @@ public class ClearLagTask extends BukkitRunnable {
 			for (int warning : warnings) {
 				if (counter == warning) {
 					int remainingSec = interval - counter;
-					sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Warning!"
-							+ ChatColor.RED + "Ground items will be removed in " + ChatColor.GOLD + remainingSec + ChatColor.RED + " seconds"
-							+ ". Use " + ChatColor.GOLD + "/clearlag cancel" + ChatColor.RED + " to cancel the next clear");
+					sendMessage(warningMessage.replaceAll("%remaining%", "" + remainingSec));
 					break;
 				}
 			}

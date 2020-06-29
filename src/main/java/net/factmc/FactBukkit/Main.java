@@ -101,9 +101,13 @@ public class Main extends JavaPlugin implements Listener {
         if (getConfig().getBoolean("clearlag.enabled")) {
         	int interval = getConfig().getInt("clearlag.interval");
         	Integer[] warnings = getConfig().getIntegerList("clearlag.warnings").toArray(new Integer[0]);
+        	
+        	String warningMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("clearlag.warning-message"));
+        	String clearMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("clearlag.clear-message"));
         	boolean hideMessages = getConfig().getBoolean("clearlag.hide-messages");
+        	
         	Class<?>[] removeTypes = ClearLagTask.getTypeClasses();
-        	new ClearLagTask(this, interval, warnings, hideMessages, removeTypes);
+        	new ClearLagTask(this, interval, warnings, warningMessage, clearMessage, hideMessages, removeTypes);
         }
     }
     

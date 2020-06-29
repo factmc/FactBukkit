@@ -15,7 +15,7 @@ import org.bukkit.scoreboard.Team;
 import org.bukkit.scoreboard.Team.Option;
 import org.bukkit.scoreboard.Team.OptionStatus;
 
-import net.factmc.FactBukkit.commands.ClearLagCancelCommand;
+import net.factmc.FactBukkit.commands.ClearlagCommand;
 import net.factmc.FactBukkit.commands.PointsCommand;
 import net.factmc.FactBukkit.commands.ReloadCommand;
 import net.factmc.FactBukkit.commands.ServersCommand;
@@ -25,6 +25,7 @@ import net.factmc.FactBukkit.commands.VoteCommand;
 import net.factmc.FactBukkit.gui.ServerGUI;
 import net.factmc.FactBukkit.gui.StatsGUI;
 import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
+import net.factmc.FactBukkit.listeners.ClearLagTask;
 import net.factmc.FactBukkit.listeners.LuckPermsEvents;
 import net.factmc.FactBukkit.listeners.VanishEvents;
 import net.factmc.FactCore.CoreUtils;
@@ -96,6 +97,14 @@ public class Main extends JavaPlugin implements Listener {
 	    	registerTeams(sb);
 	        plugin.getLogger().info("Registered Teams");
         }
+        
+        if (getConfig().getBoolean("clearlag.enabled")) {
+        	int interval = getConfig().getInt("clearlag.interval");
+        	Integer[] warnings = getConfig().getIntegerList("clearlag.warnings").toArray(new Integer[0]);
+        	boolean hideMessages = getConfig().getBoolean("clearlag.hide-messages");
+        	Class<?>[] removeTypes = ClearLagTask.getTypeClasses();
+        	new ClearLagTask(this, interval, warnings, hideMessages, removeTypes);
+        }
     }
     
     @Override
@@ -146,16 +155,11 @@ public class Main extends JavaPlugin implements Listener {
     	getCommand("stats").setExecutor(new StatsCommand());
     	getCommand("points").setExecutor(new PointsCommand());
     	getCommand("rtag-update").setExecutor(new ReloadCommand());
-    	plugin.getCommand("vote").setExecutor(new VoteCommand());
-    	plugin.getCommand("servers").setExecutor(new ServersCommand());
+    	getCommand("vote").setExecutor(new VoteCommand());
+    	getCommand("servers").setExecutor(new ServersCommand());
+    	getCommand("clearlag").setExecutor(new ClearlagCommand());
     	
     	SignEditCommand.load();
-    	
-    	if (getServer().getPluginManager().getPlugin("ClearLag") != null) {
-    		getServer().getPluginCommand("cancelclear").setExecutor(new ClearLagCancelCommand());
-    		getServer().getPluginManager().registerEvents(new ClearLagCancelCommand(), plugin);
-    		plugin.getLogger().info("Registered ClearLag cancel command");
-    	}
     }
     
     public void loadBossBar() {

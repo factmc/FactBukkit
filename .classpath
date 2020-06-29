@@ -18,15 +18,14 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/FactCore"/>
-	<classpathentry kind="lib" path="/Libraries/bukkit/Clearlag.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/GriefPrevention.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/PlotSquared-Bukkit-4.298.jar"/>
 	<classpathentry kind="lib" path="/Libraries/bukkit/worldguard-bukkit-7.0.1-beta-01.jar"/>
 	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
 		<attributes>
+			<attribute name="test" value="true"/>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
-			<attribute name="test" value="true"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>

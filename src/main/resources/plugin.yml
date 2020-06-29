@@ -17,3 +17,4 @@ commands:
   stats:
   vote:
   servers:
+  clearlag:

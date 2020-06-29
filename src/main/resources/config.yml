@@ -2,6 +2,37 @@ sites:
   example:
     name: 'Example.com'
     url: 'https://example.com/factmc'
+    
+clearlag:
+  enabled: true
+  hide-messages: false
+  interval: 900 # 15 minutes
+  warnings:
+  - 780 # 120 seconds left
+  - 840 # 60 seconds left
+  - 870 # 30 seconds left
+  - 890 # 10 seconds left
+  remove-types:
+  - AREA_EFFECT_CLOUD
+  - ARROW
+  - DRAGON_FIREBALL
+  - DROPPED_ITEM
+  - EGG
+  - ENDER_PEARL
+  - ENDER_SIGNAL
+  - EXPERIENCE_ORB
+  - FALLING_BLOCK
+  - FIREBALL
+  - FIREWORK
+  - FISHING_HOOK
+  - PRIMED_TNT
+  - SHULKER_BULLET
+  - SMALL_FIREBALL
+  - SNOWBALL
+  - SPECTRAL_ARROW
+  - SPLASH_POTION
+  - THROWN_EXP_BOTTLE
+  - WITHER_SKULL
 
 bossbar:
   rate: 0.3

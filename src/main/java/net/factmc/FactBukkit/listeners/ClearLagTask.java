@@ -54,7 +54,8 @@ public class ClearLagTask extends BukkitRunnable {
 				if (counter == warning) {
 					int remainingSec = interval - counter;
 					sendMessage(ChatColor.DARK_RED + "" + ChatColor.BOLD + "Warning!"
-							+ ChatColor.RED + "Ground items will be removed in " + ChatColor.GOLD + remainingSec + ChatColor.RED + " seconds");
+							+ ChatColor.RED + "Ground items will be removed in " + ChatColor.GOLD + remainingSec + ChatColor.RED + " seconds"
+							+ ". Use " + ChatColor.GOLD + "/clearlag cancel" + ChatColor.RED + " to cancel the next clear");
 					break;
 				}
 			}

@@ -24,6 +24,8 @@ public class ReloadCommand implements CommandExecutor, TabCompleter {
         		return false;
         	}
         	
+        	Main.registerTeams(Main.getScoreboard());
+        	
         	for (Player p : Bukkit.getOnlinePlayers()) {
         		
             	JoinEvents.updateTeam(p, Main.getScoreboard());

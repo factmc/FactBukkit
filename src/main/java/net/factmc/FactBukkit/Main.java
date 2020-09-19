@@ -28,11 +28,13 @@ import net.factmc.FactBukkit.listeners.ClaimingShovelBlocker;
 import net.factmc.FactBukkit.listeners.ClearLagTask;
 import net.factmc.FactBukkit.listeners.LuckPermsEvents;
 import net.factmc.FactBukkit.listeners.VanishEvents;
+import net.factmc.FactBukkit.listeners.VersionChecker;
 import net.factmc.FactCore.CoreUtils;
 import net.factmc.FactCore.bukkit.CustomBossbar;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.group.Group;
 import net.milkbowl.vault.economy.Economy;
+import us.myles.ViaVersion.api.protocol.ProtocolVersion;
 
 public class Main extends JavaPlugin implements Listener {
 
@@ -43,6 +45,8 @@ public class Main extends JavaPlugin implements Listener {
 	public static Economy econ = null;
 	public static boolean useVanish = true;
 	public static boolean gpInstalled = false;
+	public static boolean viaVersionInstalled = false;
+	public static int serverProtocol = -1;
 	public static boolean disableRankTag = false;
 	private static Scoreboard sb;
 
@@ -67,7 +71,12 @@ public class Main extends JavaPlugin implements Listener {
 
 		gpInstalled = getServer().getPluginManager().getPlugin("GriefPrevention") != null;
 		if (gpInstalled) {
-			plugin.getLogger().info("Blocking claiming shovel mining");
+			plugin.getLogger().info("Found GriefPrevention. Blocking claiming shovel mining");
+		}
+
+		viaVersionInstalled = getServer().getPluginManager().getPlugin("ViaVersion") != null;
+		if (viaVersionInstalled) {
+			serverProtocol = ProtocolVersion.getClosest(Bukkit.getBukkitVersion().split("-")[0]).getId();
 		}
 
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
@@ -144,6 +153,10 @@ public class Main extends JavaPlugin implements Listener {
 
 		if (gpInstalled) {
 			getServer().getPluginManager().registerEvents(new ClaimingShovelBlocker(), plugin);
+		}
+
+		if (viaVersionInstalled) {
+			getServer().getPluginManager().registerEvents(new VersionChecker(), plugin);
 		}
 
 		if (!disableRankTag) {
@@ -223,8 +236,9 @@ public class Main extends JavaPlugin implements Listener {
 				team.setOption(Option.COLLISION_RULE, OptionStatus.ALWAYS);
 
 				if (!group.equalsIgnoreCase("default")) {
-					String prefix = CoreUtils.getPrefix(group);
+					String prefix = CoreUtils.getPrefix(group).replaceAll("" + ChatColor.RESET, "" + ChatColor.WHITE);
 					team.setPrefix(prefix);
+					team.setColor(ChatColor.getByChar(prefix.charAt(4)));
 				}
 				if (i > 0) {
 					team.setSuffix(ChatColor.GRAY + "[HIDDEN]");

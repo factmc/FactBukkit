@@ -27,12 +27,16 @@
 			<id>worldedit-repo</id>
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
+		<repository>
+			<id>viaversion-repo</id>
+			<url>https://repo.viaversion.com</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<version>1.16.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -43,9 +47,9 @@
 		</dependency>
 		<dependency>
 			<groupId>de.myzelyam</groupId>
-            <artifactId>SuperVanish</artifactId>
-            <version>6.1.3</version>
-            <scope>provided</scope>
+			<artifactId>SuperVanish</artifactId>
+			<version>6.1.3</version>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.MilkBowl</groupId>
@@ -64,6 +68,11 @@
 			<artifactId>worldedit-bukkit</artifactId>
 			<version>7.2.0-SNAPSHOT</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>us.myles</groupId>
+			<artifactId>viaversion</artifactId>
+			<version>3.1.0</version>
 		</dependency>
 	</dependencies>
 
